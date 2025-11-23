@@ -1249,20 +1249,7 @@ class ECommerceApp {
                 seller: "Cooperativa Cafetalera San Salvador",
                 location: "Santa Ana, El Salvador"
             },
-            {
-                id: 101,
-                title: "Pupusas Congeladas (12 unidades)",
-                brand: "Pupusería Doña María",
-                price: 8.50,
-                type: "physical",
-                category: "food",
-                available: true,
-                image: "productos/daniel-lloyd-blunk-fernandez-_1RoP0UgJBU-unsplash.jpg",
-                description: "Pupusas tradicionales salvadoreñas congeladas. Incluye queso, frijol y chicharrón. Listas para calentar.",
-                rating: 4.6,
-                seller: "Pupusería Doña María",
-                location: "San Salvador, El Salvador"
-            },
+
             {
                 id: 102,
                 title: "Artesanía de Barro Negro",
