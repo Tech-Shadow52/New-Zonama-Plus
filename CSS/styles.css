@@ -9,7 +9,7 @@ body {
     font-family: 'Amazon Ember', Arial, sans-serif;
     line-height: 1.5;
     color: #0F1111;
-    background: #EAEDED;
+    background: #E8EBEF;
     min-height: 100vh;
 }
 
@@ -21,7 +21,7 @@ body {
 
 /* Header Styles - Professional */
 .header {
-    background: #232F3E;
+    background: #0057B7;
     color: white;
     padding: 0;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -39,7 +39,7 @@ body {
 }
 
 .logo h1 {
-    color: #FF9900;
+    color: #FFB400;
     font-size: 1.6rem;
     font-weight: 700;
     letter-spacing: -0.5px;
@@ -47,7 +47,7 @@ body {
 }
 
 .logo h1 i {
-    color: #FF9900;
+    color: #FFB400;
     margin-right: 8px;
 }
 
@@ -68,11 +68,11 @@ body {
 }
 
 .search-bar input:focus {
-    border-color: #FF9900;
+    border-color: #FFB400;
 }
 
 .search-bar button {
-    background: #FF9900;
+    background: #FFB400;
     border: none;
     padding: 10px 16px;
     border-radius: 0 4px 4px 0;
@@ -92,9 +92,9 @@ body {
 }
 
 .btn-primary {
-    background: #FF9900;
+    background: #FFB400;
     color: #0F1111;
-    border: 1px solid #FF9900;
+    border: 1px solid #FFB400;
     padding: 8px 16px;
     border-radius: 8px;
     cursor: pointer;
@@ -118,14 +118,14 @@ body {
 }
 
 .cart-icon:hover {
-    color: #FF9900;
+    color: #FFB400;
 }
 
 .cart-count {
     position: absolute;
     top: -8px;
     right: -8px;
-    background: #FF9900;
+    background: #FFB400;
     color: #0F1111;
     border-radius: 50%;
     width: 20px;
@@ -141,7 +141,7 @@ body {
 .main-content {
     min-height: calc(100vh - 140px);
     padding: 0;
-    background: #EAEDED;
+    background: #E8EBEF;
 }
 
 /* Categories Section */
@@ -184,12 +184,12 @@ body {
 .category-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-    border-color: #FF9900;
+    border-color: #FFB400;
 }
 
 .category-card i {
     font-size: 2.5rem;
-    color: #FF9900;
+    color: #FFB400;
     margin-bottom: 0.75rem;
     text-shadow: none;
 }
@@ -287,12 +287,12 @@ body {
 
 .filter-btn:hover {
     background: #F7F8F8;
-    border-color: #FF9900;
+    border-color: #FFB400;
 }
 
 .filter-btn.active {
     background: #FFF3E0;
-    border-color: #FF9900;
+    border-color: #FFB400;
     color: #0F1111;
 }
 
@@ -830,7 +830,7 @@ body {
 
 /* Footer */
 .footer {
-    background: #232F3E;
+    background: #0057B7;
     color: white;
     text-align: center;
     padding: 2rem 0;
@@ -1140,7 +1140,7 @@ Theme Enhancements */
 
 /* Hero Section - Professional */
 .hero {
-    background: linear-gradient(135deg, #232F3E 0%, #37475A 100%);
+    background: linear-gradient(135deg, #0057B7 0%, #3CA7FF 100%);
     padding: 3rem 0;
     text-align: center;
     color: white;
@@ -1158,7 +1158,7 @@ Theme Enhancements */
     font-size: 1.1rem;
     margin-bottom: 1.5rem;
     opacity: 0.95;
-    color: #EAEDED;
+    color: #E8EBEF;
 }
 
 .hero-buttons {
@@ -1329,7 +1329,7 @@ Theme Enhancements */
 
 /* Seller Hero */
 .seller-hero {
-    background: linear-gradient(135deg, #232F3E 0%, #37475A 100%);
+    background: linear-gradient(135deg, #0057B7 0%, #3CA7FF 100%);
     color: white;
     padding: 3rem 2rem;
     text-align: center;
@@ -1344,7 +1344,7 @@ Theme Enhancements */
 
 .seller-tagline {
     font-size: 1.2rem;
-    color: #EAEDED;
+    color: #E8EBEF;
     margin-bottom: 2rem;
     max-width: 700px;
     margin-left: auto;
@@ -1372,7 +1372,7 @@ Theme Enhancements */
 
 .stat-item span {
     font-size: 0.9rem;
-    color: #EAEDED;
+    color: #E8EBEF;
 }
 
 /* Why Sell Section */
@@ -2862,7 +2862,7 @@ input:valid:not(:placeholder-shown) {
 /* CTA Section */
 .seller-cta {
     padding: 3rem 2rem;
-    background: linear-gradient(135deg, #232F3E 0%, #37475A 100%);
+    background: linear-gradient(135deg, #0057B7 0%, #3CA7FF 100%);
     text-align: center;
     color: white;
 }
@@ -2876,7 +2876,7 @@ input:valid:not(:placeholder-shown) {
 
 .seller-cta p {
     font-size: 1.1rem;
-    color: #EAEDED;
+    color: #E8EBEF;
     margin-bottom: 2rem;
 }
 
@@ -2902,7 +2902,7 @@ input:valid:not(:placeholder-shown) {
 .cta-note {
     margin-top: 1rem;
     font-size: 0.85rem;
-    color: #EAEDED;
+    color: #E8EBEF;
     opacity: 0.8;
 }
 
@@ -3465,7 +3465,7 @@ input:valid:not(:placeholder-shown) {
 }
 
 .upload-tab:hover {
-    background: #EAEDED;
+    background: #E8EBEF;
 }
 
 .upload-tab.active {
