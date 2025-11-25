@@ -311,7 +311,7 @@ class ECommerceApp {
                 brand: "AnimeCollect",
                 price: 29.99,
                 type: "physical",
-                category: "books",
+                category: "misc",
                 available: true,
                 image: "productos/fumo reimu touhou gamer pro.avif",
                 description: "Figura coleccionable Fumo de Reimu Hakurei de Touhou Project. Perfecta para fans y coleccionistas.",
@@ -326,7 +326,7 @@ class ECommerceApp {
                 brand: "AnimeCollect",
                 price: 34.99,
                 type: "physical",
-                category: "books",
+                category: "misc",
                 available: true,
                 image: "productos/bocchi.avif",
                 description: "Figura coleccionable de Bocchi the Rock. Detallada y de alta calidad para fans del anime.",
@@ -341,7 +341,7 @@ class ECommerceApp {
                 brand: "AnimeCollect",
                 price: 39.99,
                 type: "physical",
-                category: "books",
+                category: "misc",
                 available: true,
                 image: "productos/frieren.avif",
                 description: "Figura coleccionable de Frieren: Beyond Journey's End. Excelente calidad y detalles.",
@@ -356,7 +356,7 @@ class ECommerceApp {
                 brand: "MusicCollect",
                 price: 32.99,
                 type: "physical",
-                category: "books",
+                category: "misc",
                 available: true,
                 image: "productos/ado.avif",
                 description: "Figura coleccionable de Ado, la famosa cantante japonesa. Para fans de J-Pop.",
@@ -371,7 +371,7 @@ class ECommerceApp {
                 brand: "AnimeKeys",
                 price: 9.99,
                 type: "physical",
-                category: "books",
+                category: "misc",
                 available: true,
                 image: "productos/llavero gurren laggan.avif",
                 description: "Llavero metálico de Gurren Lagann. Accesorio perfecto para fans del anime mecha.",
@@ -386,7 +386,7 @@ class ECommerceApp {
                 brand: "SpecialItems",
                 price: 19.99,
                 type: "physical",
-                category: "books",
+                category: "misc",
                 available: true,
                 image: "productos/si.avif",
                 description: "Artículo especial de colección. Edición limitada para verdaderos coleccionistas.",
@@ -401,7 +401,7 @@ class ECommerceApp {
                 brand: "PremiumGoods",
                 price: 24.99,
                 type: "physical",
-                category: "books",
+                category: "misc",
                 available: true,
                 image: "productos/450185705f404dfc823593062d7d9ad2-goods.avif",
                 description: "Artículo premium de alta calidad. Perfecto para regalo o colección personal.",
@@ -976,7 +976,8 @@ searchProducts() {
             'electronics': 'Electrónicos',
             'clothing': 'Ropa',
             'home': 'Hogar',
-            'books': 'Libros',
+            'misc': 'Miscelánea', //Nueva categoría
+            'books': 'Libros', //Aún existe para libros
             'food': 'Comida Local',
             'crafts': 'Artesanías'
         };
@@ -1198,43 +1199,64 @@ searchProducts() {
                 if (digitalPolicy) digitalPolicy.style.display = 'none';
             }
             
-            // Handle different product types with better localization
-            if (product.category === 'books') {
-                document.getElementById('productDetailPages').textContent = `${product.pages} páginas`;
-                document.getElementById('productDetailPublisher').textContent = product.publisher;
-                document.getElementById('productDetailGenre').textContent = product.genre;
-                document.getElementById('productDetailISBN').textContent = product.seller || 'Editorial';
-                document.getElementById('productDetailType').textContent = product.type === 'physical' ? 'Libro Físico' : 'Libro Digital';
-            } else if (product.category === 'food') {
-                document.getElementById('productDetailPages').textContent = product.specs || 'Producto alimenticio';
-                document.getElementById('productDetailPublisher').textContent = product.brand;
-                document.getElementById('productDetailGenre').textContent = 'Comida Local';
-                document.getElementById('productDetailISBN').textContent = product.seller;
-                document.getElementById('productDetailType').textContent = product.type === 'physical' ? 'Producto Físico' : 'Producto Digital';
-            } else if (product.category === 'crafts') {
-                document.getElementById('productDetailPages').textContent = 'Artesanía tradicional';
-                document.getElementById('productDetailPublisher').textContent = product.brand;
-                document.getElementById('productDetailGenre').textContent = 'Artesanías';
-                document.getElementById('productDetailISBN').textContent = product.seller;
-                document.getElementById('productDetailType').textContent = 'Hecho a mano';
-            } else {
-                // For other products, show relevant specs
-                document.getElementById('productDetailPages').textContent = product.specs || product.material || product.features || 'Ver descripción';
-                document.getElementById('productDetailPublisher').textContent = product.brand || 'N/A';
-                document.getElementById('productDetailGenre').textContent = this.getCategoryName(product.category);
-                document.getElementById('productDetailISBN').textContent = product.seller || 'Vendedor verificado';
-                document.getElementById('productDetailType').textContent = product.type === 'physical' ? 'Producto Físico' : 'Producto Digital';
-            }
-            
-            // Add location if available (only for physical products)
-            const locationElement = document.getElementById('productDetailLocation');
-            if (locationElement) {
-                if (product.type === 'physical') {
-                    locationElement.textContent = product.location || 'El Salvador';
-                } else {
-                    locationElement.textContent = 'Digital - Sin ubicación física';
-                }
-            }
+// Handle different product categories with better localization
+
+// Miscelánea (figuras / coleccionables)
+if (product.category === 'misc') {
+    document.getElementById('productDetailPages').textContent =
+        product.specs || product.material || 'Artículo misceláneo';
+    document.getElementById('productDetailPublisher').textContent =
+        product.brand || 'Miscelánea';
+    document.getElementById('productDetailGenre').textContent = 'Miscelánea';
+    document.getElementById('productDetailISBN').textContent =
+        product.seller || 'Vendedor';
+    document.getElementById('productDetailType').textContent =
+        product.type === 'physical' ? 'Producto físico' : 'Producto digital';
+
+// Libros
+} else if (product.category === 'books') {
+    document.getElementById('productDetailPages').textContent =
+        product.pages ? `${product.pages} páginas` : 'Libro';
+    document.getElementById('productDetailPublisher').textContent =
+        product.publisher || product.brand || 'Editorial';
+    document.getElementById('productDetailGenre').textContent =
+        product.genre || 'Libro';
+    document.getElementById('productDetailISBN').textContent =
+        product.isbn || product.seller || 'Editorial';
+    document.getElementById('productDetailType').textContent =
+        product.type === 'physical' ? 'Libro físico' : 'Libro digital';
+
+// Comida local
+} else if (product.category === 'food') {
+    document.getElementById('productDetailPages').textContent =
+        product.specs || 'Producto alimenticio';
+    document.getElementById('productDetailPublisher').textContent = product.brand;
+    document.getElementById('productDetailGenre').textContent = 'Comida Local';
+    document.getElementById('productDetailISBN').textContent = product.seller;
+    document.getElementById('productDetailType').textContent =
+        product.type === 'physical' ? 'Producto físico' : 'Producto digital';
+
+// Artesanías
+} else if (product.category === 'crafts') {
+    document.getElementById('productDetailPages').textContent = 'Artesanía tradicional';
+    document.getElementById('productDetailPublisher').textContent = product.brand;
+    document.getElementById('productDetailGenre').textContent = 'Artesanías';
+    document.getElementById('productDetailISBN').textContent = product.seller;
+    document.getElementById('productDetailType').textContent = 'Hecho a mano';
+
+// Resto de categorías (electrónica, hogar, ropa, etc.)
+} else {
+    document.getElementById('productDetailPages').textContent =
+        product.specs || product.material || product.features || 'Ver descripción';
+    document.getElementById('productDetailPublisher').textContent =
+        product.brand || 'N/A';
+    document.getElementById('productDetailGenre').textContent =
+        this.getCategoryName(product.category);
+    document.getElementById('productDetailISBN').textContent =
+        product.seller || 'Vendedor verificado';
+    document.getElementById('productDetailType').textContent =
+        product.type === 'physical' ? 'Producto físico' : 'Producto digital';
+}
             
             document.getElementById('productDetailDescription').textContent = product.description;
 
