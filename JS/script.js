@@ -442,35 +442,25 @@ class ECommerceApp {
         });
 
         // Search functionality
-        const searchBtn = document.getElementById('searchBtn');
-        const searchInput = document.getElementById('searchInput');
-        
-        searchBtn.addEventListener('click', () => this.searchProducts());
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.searchProducts();
-        });
+const searchBtn = document.getElementById('searchBtn');
+const searchInput = document.getElementById('searchInput');
 
-        // Product type filter - removed (now using buttons with onclick)
+// Botón de buscar sigue funcionando
+searchBtn.addEventListener('click', () => this.searchProducts());
 
-        // Add "Show All" button functionality
-        const showAllBtn = document.createElement('button');
-        showAllBtn.textContent = 'Mostrar Todos los Productos';
-        showAllBtn.className = 'btn-primary';
-        showAllBtn.style.marginBottom = '1rem';
-        showAllBtn.onclick = () => this.displayProducts(this.products);
-        
-        const productsHeader = document.querySelector('.products-header');
-        if (productsHeader) {
-            productsHeader.appendChild(showAllBtn);
-        }
+// Búsqueda en tiempo real mientras se escribe
+searchInput.addEventListener('input', () => {
+    this.searchProducts();
+});
 
-        // Category filters
-        document.querySelectorAll('.category-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                const category = card.dataset.category;
-                this.filterByCategory(category);
-            });
-        });
+// Enter también dispara la búsqueda (pero ya no es necesario)
+searchInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        this.searchProducts();
+    }
+});
+
 
 
 
@@ -839,21 +829,48 @@ class ECommerceApp {
         this.updateFilterCounts();
     }
 
-    searchProducts() {
-        const query = document.getElementById('searchInput').value.toLowerCase();
-        if (!query) {
-            this.displayProducts();
-            return;
-        }
+searchProducts() {
+    const searchInput = document.getElementById('searchInput');
+    const query = searchInput.value.trim().toLowerCase();
 
-        const filtered = this.products.filter(product => 
-            product.title.toLowerCase().includes(query) ||
-            product.category.toLowerCase().includes(query) ||
-            (product.seller && product.seller.toLowerCase().includes(query))
-        );
-        
-        this.displayProducts(filtered);
+    const heroSection = document.querySelector('.hero');
+    const benefitsSection = document.querySelector('.benefits');
+    const productsSection = document.querySelector('.products');
+
+    // ¿Debemos hacer scroll? Solo la primera vez que se empieza a buscar,
+    // cuando el hero todavía está visible.
+    let shouldScroll = heroSection && heroSection.style.display !== 'none';
+
+    // Si NO hay texto en el buscador: mostrar todo y reactivar secciones
+    if (!query) {
+        this.displayProducts();
+
+        if (heroSection) heroSection.style.display = '';
+        if (benefitsSection) benefitsSection.style.display = '';
+
+        return;
     }
+
+    // Si hay texto: ocultar hero + beneficios
+    if (heroSection) heroSection.style.display = 'none';
+    if (benefitsSection) benefitsSection.style.display = 'none';
+
+    // Filtrar productos
+    const filtered = this.products.filter(product => 
+        product.title.toLowerCase().includes(query) ||
+        product.category.toLowerCase().includes(query) ||
+        (product.seller && product.seller.toLowerCase().includes(query))
+    );
+
+    this.displayProducts(filtered);
+
+    // Hacer scroll a productos solo la primera vez
+    if (shouldScroll && productsSection) {
+        productsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+
 
     filterByType(type) {
         // Update active button
