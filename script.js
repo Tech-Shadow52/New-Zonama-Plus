@@ -461,6 +461,40 @@ searchInput.addEventListener('keypress', (e) => {
     }
 });
 
+    // Filtros por tipo de producto (Todos / Físicos / Digitales)
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const type = btn.dataset.filter;   // "all", "physical", "digital"
+            this.filterByType(type);
+        });
+    });
+
+    // Ordenar productos (select "Ordenar por")
+    const sortSelect = document.getElementById('sortSelect');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', (e) => {
+            this.sortProducts(e.target.value);
+        });
+    }
+
+    // Tarjetas de categorías (Comida Local, Artesanías, Ropa, etc.)
+    document.querySelectorAll('.category-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const category = card.dataset.category;  // "food", "crafts", "electronics", etc.
+            this.filterByCategory(category);
+        });
+    });
+
+    // Botón "Mostrar Todos los Productos"
+    const showAllBtn = document.getElementById('showAllProducts');
+    if (showAllBtn) {
+        showAllBtn.addEventListener('click', () => {
+            // Limpia el buscador y muestra todo
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) searchInput.value = '';
+            this.displayProducts();
+        });
+    }
 
 
 
