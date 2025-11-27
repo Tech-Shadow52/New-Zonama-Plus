@@ -409,7 +409,55 @@ class ECommerceApp {
                 specs: "Alta calidad, Diseño único",
                 material: "Premium",
                 brand: "PremiumGoods"
+            },
+
+            {
+                    title: "Atomic Habits",
+                    author: "James Clear",
+                    brand: "Penguin Random House",
+                    price: 16.99,
+                    type: "physical",
+                    category: "books",
+                    available: true,
+                    image: "https://images-na.ssl-images-amazon.com/images/I/91bYsX41DVL.jpg",
+                    description: "Un método probado para construir hábitos efectivos y alcanzar metas mediante mejoras pequeñas pero consistentes.",
+                    rating: 4.9,
+                    specs: "Tapa dura, 320 páginas"
+            },
+
+            {
+                id: 52,
+                    title: "Sapiens: A Brief History of Humankind",
+                    author: "Yuval Noah Harari",
+                    brand: "Harper",
+                    price: 18.99,
+                    type: "physical",
+                    category: "books",
+                    available: true,
+                    image: "https://internacionallibrosyregalos.com/cdn/shop/files/9788466347518_1_1024x1024@2x.jpg?v=1684190524",
+                    description: "Un recorrido profundo y accesible sobre la evolución de la humanidad y sus estructuras sociales.",
+                    rating: 4.9,
+                    specs: "Tapa blanda, 498 páginas"
+            },
+
+            {
+                    id: 53,
+                    title: "Chainsaw Man, Vol. 1",
+                    author: "Tatsuki Fujimoto",
+                    brand: "VIZ Media",
+                    price: 9.99,
+                    type: "physical",
+                    category: "books",
+                    available: true,
+                    image: "https://static.wikia.nocookie.net/chainsaw-man/images/3/3a/Volumen_1.png/revision/latest?cb=20220922005416&path-prefix=es",
+                    description: "El primer volumen de la exitosa serie Chainsaw Man. Denji obtiene el poder de transformarse en una motosierra humana para enfrentar demonios y sobrevivir en un mundo brutal.",
+                    rating: 4.8,
+                    specs: "Tapa blanda, 192 páginas"
             }
+
+            
+
+
         ];
         
         this.displayProducts();
