@@ -121,10 +121,39 @@ ESC           → Cerrar modal
 ## 🛠️ Tecnologías
 
 - **HTML5**: Estructura semántica con ARIA
-- **CSS3**: Estilos modernos con animaciones
+- **CSS3**: Estilos modernos con animaciones y variables CSS
 - **JavaScript (Vanilla)**: Sin dependencias externas
 - **Font Awesome**: Iconos
 - **Responsive Design**: Mobile-first
+
+---
+
+## 🎨 Paleta de Colores
+
+### Colores Principales
+- **Azul Oceánico** (`#0057B7`) - Color primario, header y elementos principales
+- **Azul Cielo** (`#3CA7FF`) - Color primario claro, hover y acentos
+- **Amarillo Mango** (`#FFC94A`) - Color de acento, botones CTA
+- **Amarillo Mango Oscuro** (`#E0A000`) - Hover de botones CTA
+
+### Colores de Fondo
+- **Gris Niebla** (`#F5F7FA`) - Fondo del body
+- **Blanco** (`#FFFFFF`) - Fondo de superficies y cards
+- **Arena Suave** (`#F4EEDC`) - Fondo alternativo para cards
+
+### Colores de Texto
+- **Texto Principal** (`#1C1F22`) - Texto principal oscuro
+- **Texto Secundario** (`#565959`) - Texto secundario/muted
+
+### Colores de Estado
+- **Éxito** (`#3BAA57`) - Mensajes de éxito
+- **Error** (`#D63939`) - Mensajes de error
+- **Advertencia** (`#F2A900`) - Mensajes de advertencia
+
+### Colores de Borde
+- **Borde Suave** (`#D9DEE5`) - Bordes y separadores
+
+**Nota:** Todos los colores están definidos como variables CSS en `:root` para fácil personalización.
 
 ---
 
