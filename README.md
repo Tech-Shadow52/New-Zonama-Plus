@@ -14,18 +14,20 @@ Zonama es un marketplace moderno que conecta a vendedores locales con compradore
 - Animaciones suaves y profesionales
 - Responsive en todos los dispositivos
 
-### ♿ Accesibilidad WCAG 2.1 Nivel AA
+### ♿ Accesibilidad
 - **Navegación por teclado completa**: Tab, Enter, ESC
-- **Soporte para lectores de pantalla**: NVDA, JAWS, VoiceOver, TalkBack
-- **Contraste mejorado**: Cumplimiento WCAG 2.1
-- **Focus visible**: Indicadores claros en todos los elementos
-- **ARIA labels**: Descripciones completas para tecnologías asistivas
+- **Etiquetas ARIA**: Roles y labels para tecnologías asistivas
+- **Modales accesibles**: aria-modal y aria-label en todos los diálogos
+- **Focus visible**: Indicadores claros en elementos interactivos
+- **Texto alternativo**: Imágenes con descripciones apropiadas
 
 ### 🛒 Funcionalidades de E-commerce
-- Catálogo de productos con filtros
-- Carrito de compras
+- Catálogo de 24 productos en 4 categorías
+- Filtros por tipo (físico/digital) y ordenamiento
+- Carrito de compras interactivo
 - Proceso de checkout completo
 - Múltiples métodos de pago (Tarjeta, Tigo Money, Chivo Wallet, Efectivo)
+- Panel de vendedor con gestión de productos
 - Planes para vendedores (Básico, Profesional, Empresarial)
 
 ### 🇸🇻 Enfoque Local
@@ -36,15 +38,23 @@ Zonama es un marketplace moderno que conecta a vendedores locales con compradore
 
 ---
 
-## 📚 Documentación
+## 📦 Catálogo de Productos
 
-### Para Usuarios
-- 📖 [**GUIA-RAPIDA.md**](GUIA-RAPIDA.md) - Cómo usar las nuevas funcionalidades
-- 🎨 [**DEMO-VISUAL.md**](DEMO-VISUAL.md) - Demostración visual de las mejoras
+El marketplace cuenta con **24 productos** organizados en 4 categorías:
 
-### Para Desarrolladores
-- 🔧 [**MEJORAS-IMPLEMENTADAS.md**](MEJORAS-IMPLEMENTADAS.md) - Detalles técnicos completos
-- 📊 [**RESUMEN-EJECUTIVO.md**](RESUMEN-EJECUTIVO.md) - Resumen ejecutivo y ROI
+### Electrónicos (7 productos)
+Micrófono Gamer Pro, Webcam HD, Auriculares, Hub USB, Altavoces, Controller Gaming, Tapones USB-C
+
+### Ropa y Accesorios (5 productos)
+Camisa Cyberpunk, Fundas, Pulsera, Gafas de Natación
+
+### Hogar (5 productos)
+Cojín de Asiento, Almohada, Mousepad Gaming, Soporte 360°, Cubierta para Moto
+
+### Coleccionables (7 productos)
+Figuras Fumo Reimu, Bocchi, Frieren, Ado, Llavero Gurren Lagann, Artículos especiales
+
+Todas las imágenes están almacenadas localmente en formato AVIF y PNG para carga rápida y confiable.
 
 ---
 
@@ -101,16 +111,13 @@ ESC           → Cerrar modal
 
 ## ♿ Accesibilidad
 
-### Cumplimiento WCAG 2.1
-- ✅ **Nivel A**: Cumplimiento completo
-- ✅ **Nivel AA**: Cumplimiento completo
-- ⚠️ **Nivel AAA**: Cumplimiento parcial
-
-### Tecnologías Asistivas Soportadas
-- ✅ NVDA (Windows)
-- ✅ JAWS (Windows)
-- ✅ VoiceOver (Mac/iOS)
-- ✅ TalkBack (Android)
+### Características de Accesibilidad Implementadas
+- ✅ **Navegación por teclado**: Todos los elementos interactivos son accesibles con Tab, Enter y ESC
+- ✅ **ARIA Labels**: Roles y etiquetas descriptivas en modales, botones y formularios
+- ✅ **Modales accesibles**: Implementación con aria-modal="true" y aria-label
+- ✅ **Texto alternativo**: Imágenes con atributos alt descriptivos
+- ✅ **Focus visible**: Indicadores visuales claros para navegación por teclado
+- ✅ **Etiquetas de formulario**: Labels asociados correctamente con inputs
 
 ### Navegadores Soportados
 - ✅ Chrome 90+
@@ -139,37 +146,22 @@ ESC           → Cerrar modal
 
 ---
 
-## 🧪 Testing
-
-### Pruebas Realizadas
-- ✅ Navegación por teclado
-- ✅ Lectores de pantalla
-- ✅ Responsive en múltiples dispositivos
-- ✅ Validación WCAG 2.1
-- ✅ Cross-browser testing
-
-### Herramientas Utilizadas
-- WAVE (Web Accessibility Evaluation Tool)
-- axe DevTools
-- Lighthouse (Google)
-- Manual testing con NVDA y VoiceOver
-
----
-
 ## 📊 Estructura del Proyecto
 
 ```
 zonama/
-├── index.html              # Página principal
-├── script.js               # Lógica de la aplicación
-├── styles.css              # Estilos y animaciones
-├── images/                 # Imágenes del proyecto
-│   └── it-ends-with-us-cover.png
-├── README.md               # Este archivo
-├── GUIA-RAPIDA.md         # Guía de usuario
-├── DEMO-VISUAL.md         # Demostración visual
-├── MEJORAS-IMPLEMENTADAS.md # Detalles técnicos
-└── RESUMEN-EJECUTIVO.md   # Resumen ejecutivo
+├── index.html                    # Página principal con estructura HTML
+├── css/
+│   └── styles.css               # Estilos CSS y animaciones
+├── js/
+│   └── script.js                # Lógica de la aplicación y funcionalidades
+├── productos/                    # Imágenes de productos (24 archivos)
+│   ├── *.avif                   # Imágenes en formato AVIF
+│   └── *.png                    # Imágenes en formato PNG
+├── 134bf13be1fc1dbdc16360a9ff567cca.jpg  # Imagen hero
+├── 1381057802d468a6de12e50123a57b47.jpg  # Imagen adicional
+├── README.md                     # Documentación principal
+└── PRODUCTOS-ACTUALIZADOS.md    # Lista detallada de productos
 ```
 
 ---
@@ -210,17 +202,14 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 ## 🎯 Roadmap
 
-### Versión 2.1 (Próximamente)
-- [ ] Modo oscuro completo
-- [ ] Galería de imágenes múltiples
+### Próximas Mejoras
 - [ ] Búsqueda con autocompletado
-- [ ] Filtros avanzados
-
-### Versión 3.0 (Futuro)
-- [ ] App móvil nativa
-- [ ] Integración con redes sociales
+- [ ] Filtros avanzados por categoría y precio
 - [ ] Sistema de reseñas y calificaciones
+- [ ] Galería de imágenes múltiples por producto
+- [ ] Modo oscuro
 - [ ] Chat en vivo con vendedores
+- [ ] App móvil nativa
 
 ---
 
