@@ -1750,12 +1750,47 @@ if (product.category === 'misc') {
         document.getElementById('productType').value = product.type;
         document.getElementById('productStock').value = product.stock;
         document.getElementById('productDescription').value = product.description;
-        document.getElementById('productImage').value = product.image;
         document.getElementById('productSpecs').value = product.specs || '';
 
+        // Handle image - if it's a URL, show it in the URL tab
+        if (product.image) {
+            if (product.image.startsWith('http')) {
+                // Switch to URL tab
+                this.switchImageTab('url');
+                document.getElementById('productImageUrl').value = product.image;
+                
+                // Show preview
+                const urlPreview = document.getElementById('urlImagePreview');
+                const urlPreviewImg = document.getElementById('urlPreviewImg');
+                if (urlPreviewImg && urlPreview) {
+                    urlPreviewImg.src = product.image;
+                    urlPreview.style.display = 'block';
+                }
+            } else {
+                // It's a local file path or base64 - preserve it
+                this.currentImageData = product.image;
+                
+                // Try to show preview if it's a valid image
+                const imagePreview = document.getElementById('imagePreview');
+                const previewImg = document.getElementById('previewImg');
+                if (imagePreview && previewImg) {
+                    previewImg.src = product.image;
+                    imagePreview.style.display = 'block';
+                    
+                    // Hide the upload placeholder
+                    const uploadPlaceholder = document.querySelector('.upload-placeholder');
+                    if (uploadPlaceholder) {
+                        uploadPlaceholder.style.display = 'none';
+                    }
+                }
+            }
+        }
+
         // Change form title and button text
-        document.querySelector('.add-product-container h2').textContent = 'Editar Producto';
-        document.querySelector('.btn-submit-product').textContent = 'Guardar Cambios';
+        const formTitle = document.querySelector('.add-product-container h2');
+        const submitBtn = document.querySelector('.btn-submit-product');
+        if (formTitle) formTitle.textContent = 'Editar Producto';
+        if (submitBtn) submitBtn.textContent = 'Guardar Cambios';
 
         // Open the modal
         this.showModal('addProductModal');
@@ -1973,16 +2008,29 @@ if (product.category === 'misc') {
             // File upload is active
             if (this.currentImageData) {
                 return this.currentImageData;
-            } else {
-                this.showNotification('Por favor selecciona una imagen', 'warning');
-                return null;
+            } else if (this.editingProductId) {
+                // If editing and no new image selected, keep the old one
+                const product = this.sellerProducts.find(p => p.id === this.editingProductId);
+                if (product && product.image) {
+                    return product.image;
+                }
             }
+            
+            this.showNotification('Por favor selecciona una imagen', 'warning');
+            return null;
         } else if (urlTab && urlTab.classList.contains('active')) {
             // URL input is active
             const urlInput = document.getElementById('productImageUrl');
             const imageUrl = urlInput ? urlInput.value.trim() : '';
             
             if (!imageUrl) {
+                // If editing and no URL provided, keep the old image
+                if (this.editingProductId) {
+                    const product = this.sellerProducts.find(p => p.id === this.editingProductId);
+                    if (product && product.image) {
+                        return product.image;
+                    }
+                }
                 this.showNotification('Por favor ingresa una URL de imagen', 'warning');
                 return null;
             }
