@@ -895,7 +895,7 @@ initSalvadorFeatures() {
 
 ---
 
-**Última actualización:** Noviembre 2024  
+**Última actualización:** Noviembre 2025  
 **Versión:** 1.0  
 **Total de funciones documentadas:** 32+  
 **Total de productos:** 27 (24 locales + 3 salvadoreños)
