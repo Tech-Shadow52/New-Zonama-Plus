@@ -1011,46 +1011,42 @@ searchProducts() {
         this.showNotification('Producto agregado al carrito', 'success');
     }
 
-    // NUEVO
     buyNow(productId) {
-        const product = this.products.find(p => p.id === productId);
-        if (!product) return;
+    const product = this.products.find(p => p.id === productId);
+    if (!product || !product.available) {
+        this.showNotification('Producto no disponible', 'error');
+        return;
+    }
 
-        if (!product.available) {
-            this.showNotification('Este producto no está disponible', 'warning');
-            return;
-        }
+    // Si no hay sesión, cerramos detalles y abrimos login
+    if (!this.currentUser) {
+        this.hideModal('productModal');  // <- cierre del modal de producto
+        this.showNotification('Debes iniciar sesión para continuar con la compra', 'warning');
+        this.showModal('authModal');
+        return;
+    }
 
-        // Si quieres exigir sesión para comprar:
-        if (!this.currentUser) {
-            this.showNotification('Debes iniciar sesión para completar la compra', 'warning');
-            this.showModal('authModal');
-            return;
-        }
+    // Usuario con sesión: agregar al carrito (igual que addToCart)
+    const existingItem = this.cart.find(item => item.id === productId);
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        this.cart.push({
+            ...product,
+            quantity: 1
+        });
+    }
+    this.updateCartDisplay();
 
-        // Asegurar que el producto está en el carrito
-        const existingItem = this.cart.find(item => item.id === productId);
-        if (existingItem) {
-            existingItem.quantity += 1;
-        } else {
-            this.cart.push({
-                ...product,
-                quantity: 1
-            });
-        }
+    // Cerrar detalles y abrir directamente el checkout
+    this.hideModal('productModal');
+    this.showModal('checkoutModal');
+    this.currentStep = 1;
+    this.showCheckoutStep(1);
+}
 
-        this.updateCartDisplay();
+    
 
-        // Cerrar detalle y abrir checkout
-        this.hideModal('productModal');
-        this.showModal('checkoutModal');
-
-        // Ir al primer paso del checkout (si tienes pasos)
-        this.currentStep = 1;
-        if (typeof this.showCheckoutStep === 'function') {
-            this.showCheckoutStep(1);
-        }
-        }
     removeFromCart(productId) {
         this.cart = this.cart.filter(item => item.id !== productId);
         this.updateCartDisplay();
