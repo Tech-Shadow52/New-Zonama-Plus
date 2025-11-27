@@ -1011,6 +1011,46 @@ searchProducts() {
         this.showNotification('Producto agregado al carrito', 'success');
     }
 
+    // NUEVO
+    buyNow(productId) {
+        const product = this.products.find(p => p.id === productId);
+        if (!product) return;
+
+        if (!product.available) {
+            this.showNotification('Este producto no está disponible', 'warning');
+            return;
+        }
+
+        // Si quieres exigir sesión para comprar:
+        if (!this.currentUser) {
+            this.showNotification('Debes iniciar sesión para completar la compra', 'warning');
+            this.showModal('authModal');
+            return;
+        }
+
+        // Asegurar que el producto está en el carrito
+        const existingItem = this.cart.find(item => item.id === productId);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            this.cart.push({
+                ...product,
+                quantity: 1
+            });
+        }
+
+        this.updateCartDisplay();
+
+        // Cerrar detalle y abrir checkout
+        this.hideModal('productModal');
+        this.showModal('checkoutModal');
+
+        // Ir al primer paso del checkout (si tienes pasos)
+        this.currentStep = 1;
+        if (typeof this.showCheckoutStep === 'function') {
+            this.showCheckoutStep(1);
+        }
+        }
     removeFromCart(productId) {
         this.cart = this.cart.filter(item => item.id !== productId);
         this.updateCartDisplay();
@@ -1028,6 +1068,8 @@ searchProducts() {
                 this.updateCartModal();
             }
         }
+
+        
     }
 
     updateCartDisplay() {
@@ -1268,6 +1310,16 @@ if (product.category === 'misc') {
                 this.addToCart(productId);
                 this.hideModal('productModal');
             };
+
+
+               // Botón "Comprar ahora"
+    const buyNowBtn = document.querySelector('.btn-buy-now');
+    if (buyNowBtn) {
+        buyNowBtn.disabled = !product.available;
+        buyNowBtn.onclick = () => {
+            this.buyNow(product.id);
+        };
+    } 
 
         this.showModal('productModal');
     }
