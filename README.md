@@ -27,7 +27,11 @@ Zonama es un marketplace moderno que conecta a vendedores locales con compradore
 - Carrito de compras interactivo
 - Proceso de checkout completo
 - Múltiples métodos de pago (Tarjeta, Tigo Money, Chivo Wallet, Efectivo)
-- Panel de vendedor con gestión de productos
+- **Panel de vendedor completo**:
+  - Agregar productos con imágenes (archivo o URL)
+  - Editar productos existentes
+  - Eliminar productos
+  - Dashboard con estadísticas
 - Planes para vendedores (Básico, Profesional, Empresarial)
 
 ### 🇸🇻 Enfoque Local
@@ -83,13 +87,25 @@ open index.html
 
 ---
 
-## 🎯 Nuevas Funcionalidades
+## 🎯 Funcionalidades Destacadas
 
-### Modal de Imagen Completa
+### Modal de Imagen Completa (Lightbox)
 ```
 1. Click en un producto → Modal de detalles
 2. Click en la imagen → Lightbox con imagen completa
 3. ESC o click fuera → Cerrar
+```
+
+### Panel de Vendedor
+```
+1. Registro de vendedor con planes (Básico/Profesional/Empresarial)
+2. Dashboard con estadísticas de ventas
+3. Agregar productos:
+   - Subir imagen desde archivo
+   - Usar URL de imagen externa
+4. Editar productos existentes (mantiene imagen si no se cambia)
+5. Eliminar productos con confirmación
+6. Almacenamiento local (localStorage)
 ```
 
 ### Navegación por Teclado
@@ -153,19 +169,24 @@ ESC           → Cerrar modal
 
 ```
 zonama/
-├── index.html                    # Página principal con estructura HTML
-├── css/
-│   └── styles.css               # Estilos CSS y animaciones
-├── js/
-│   └── script.js                # Lógica de la aplicación y funcionalidades
-├── productos/                    # Imágenes de productos locales (24 archivos)
-│   ├── *.avif                   # Imágenes en formato AVIF
-│   └── *.png                    # Imágenes en formato PNG
+├── index.html                       # Página principal con estructura HTML
+├── script.js                        # Lógica de la aplicación (raíz)
+├── styles.css                       # Estilos CSS (raíz)
+├── css/                             # Carpeta de estilos (alternativa)
+│   └── styles.css                  # Estilos CSS y animaciones
+├── js/                              # Carpeta de scripts (alternativa)
+│   └── script.js                   # Lógica de la aplicación y funcionalidades
+├── productos/                       # Imágenes de productos locales (24 archivos)
+│   ├── *.avif                      # Imágenes en formato AVIF
+│   └── *.png                       # Imágenes en formato PNG
 ├── 134bf13be1fc1dbdc16360a9ff567cca.jpg  # Imagen hero
 ├── 1381057802d468a6de12e50123a57b47.jpg  # Imagen adicional
-├── README.md                     # Documentación principal
-└── PRODUCTOS-ACTUALIZADOS.md    # Lista detallada de productos
+├── README.md                        # Documentación principal
+├── DOCUMENTACION-TECNICA.md        # Documentación técnica detallada
+└── PRODUCTOS-ACTUALIZADOS.md       # Lista detallada de productos
 ```
+
+**Nota:** Los archivos CSS y JS están disponibles tanto en la raíz como en carpetas organizadas.
 
 ---
 
@@ -203,6 +224,17 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 
 ---
 
+## 🔧 Mejoras Recientes
+
+### Versión Actual
+- ✅ **Panel de vendedor mejorado**: Corrección del botón de editar producto
+- ✅ **Gestión de imágenes**: Soporte para archivos locales y URLs externas
+- ✅ **Preservación de datos**: Al editar, mantiene la imagen si no se cambia
+- ✅ **Validaciones mejoradas**: Mejor manejo de errores en formularios
+- ✅ **Documentación técnica**: Archivo completo con tipos de datos y funciones
+
+---
+
 ## 🎯 Roadmap
 
 ### Próximas Mejoras
@@ -213,6 +245,14 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más det
 - [ ] Modo oscuro
 - [ ] Chat en vivo con vendedores
 - [ ] App móvil nativa
+- [ ] Integración con pasarelas de pago reales
+
+---
+
+## 📚 Documentación Adicional
+
+- **[DOCUMENTACION-TECNICA.md](DOCUMENTACION-TECNICA.md)**: Documentación completa de funciones, tipos de datos y estructuras
+- **[PRODUCTOS-ACTUALIZADOS.md](PRODUCTOS-ACTUALIZADOS.md)**: Lista detallada de todos los productos del catálogo
 
 ---
 
