@@ -452,20 +452,9 @@ body {
     color: #C7511F;
 }
 
-.product-author {
-    font-size: 0.85rem;
-    color: var(--color-text-muted);
-    margin-bottom: 0.5rem;
-    font-style: normal;
-}
 
-.product-brand {
-    font-size: 0.85rem;
-    color: var(--color-primary);
-    margin-bottom: 0.5rem;
-    font-weight: 400;
-    cursor: pointer;
-}
+
+
 
 .product-brand:hover {
     color: #C7511F;
@@ -1785,14 +1774,13 @@ select:focus {
     .seller-container h2 {
         font-size: 2rem;
     }
-}/* Salvador-
-specific product styling */
-.product-seller {
-    font-size: 0.85rem;
-    color: var(--color-primary);
-    font-weight: 500;
-    margin-bottom: 0.3rem;
 }
+
+.logo-icon-img {
+    height: 40px;
+    width: auto;
+}
+
 
 .product-location {
     font-size: 0.8rem;
@@ -1879,12 +1867,7 @@ specific product styling */
     animation-delay: 0.2s;
 }
 
-/* Enhanced mobile responsiveness for Salvador features */
-@media (max-width: 768px) {
-    .product-seller,
-    .product-location {
-        font-size: 0.8rem;
-    }
+
     
     .hero-stats {
         flex-direction: column;
@@ -1906,7 +1889,35 @@ specific product styling */
     .stat-number {
         font-size: 1.5rem;
     }
+
+
+
+
+.product-author,
+.product-brand,
+.product-seller {
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.85);  
+    margin-bottom: 0.3rem;
+    font-weight: 500;
 }
+
+
+.product-author:hover,
+.product-brand:hover,
+.product-seller:hover {
+    color: var(--color-primary);  
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+    border-color: #C7511F;
+}
+
 
 /* Enhanced accessibility */
 .btn-primary:focus,
@@ -2480,11 +2491,7 @@ textarea:focus {
     overflow: hidden;
 }
 
-/* Color contrast improvements */
-.product-author,
-.product-brand {
-    color: #e0e0e0;
-}
+
 
 .product-detail-author {
     color: #555;
