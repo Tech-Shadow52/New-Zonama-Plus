@@ -22,7 +22,7 @@ Zonama es un marketplace moderno que conecta a vendedores locales con compradore
 - **Texto alternativo**: Imágenes con descripciones apropiadas
 
 ### 🛒 Funcionalidades de E-commerce
-- Catálogo de 24 productos en 4 categorías
+- Catálogo de 27 productos en 5 categorías
 - Filtros por tipo (físico/digital) y ordenamiento
 - Carrito de compras interactivo
 - Proceso de checkout completo
@@ -40,7 +40,7 @@ Zonama es un marketplace moderno que conecta a vendedores locales con compradore
 
 ## 📦 Catálogo de Productos
 
-El marketplace cuenta con **24 productos** organizados en 4 categorías:
+El marketplace cuenta con **27 productos** organizados en 5 categorías:
 
 ### Electrónicos (7 productos)
 Micrófono Gamer Pro, Webcam HD, Auriculares, Hub USB, Altavoces, Controller Gaming, Tapones USB-C
@@ -48,13 +48,16 @@ Micrófono Gamer Pro, Webcam HD, Auriculares, Hub USB, Altavoces, Controller Gam
 ### Ropa y Accesorios (5 productos)
 Camisa Cyberpunk, Fundas, Pulsera, Gafas de Natación
 
-### Hogar (5 productos)
-Cojín de Asiento, Almohada, Mousepad Gaming, Soporte 360°, Cubierta para Moto
+### Hogar (6 productos)
+Cojín de Asiento, Almohada, Mousepad Gaming, Soporte 360°, Cubierta para Moto, Hamaca Salvadoreña Tejida
 
 ### Coleccionables (7 productos)
 Figuras Fumo Reimu, Bocchi, Frieren, Ado, Llavero Gurren Lagann, Artículos especiales
 
-Todas las imágenes están almacenadas localmente en formato AVIF y PNG para carga rápida y confiable.
+### Productos Salvadoreños (2 productos)
+Café Salvadoreño Premium, Artesanía de Barro Negro
+
+**Nota:** 24 productos usan imágenes locales en formato AVIF/PNG, y 3 productos salvadoreños usan imágenes externas.
 
 ---
 
@@ -155,7 +158,7 @@ zonama/
 │   └── styles.css               # Estilos CSS y animaciones
 ├── js/
 │   └── script.js                # Lógica de la aplicación y funcionalidades
-├── productos/                    # Imágenes de productos (24 archivos)
+├── productos/                    # Imágenes de productos locales (24 archivos)
 │   ├── *.avif                   # Imágenes en formato AVIF
 │   └── *.png                    # Imágenes en formato PNG
 ├── 134bf13be1fc1dbdc16360a9ff567cca.jpg  # Imagen hero

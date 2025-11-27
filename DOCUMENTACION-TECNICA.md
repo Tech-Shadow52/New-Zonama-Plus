@@ -117,12 +117,14 @@
 ### 4. Array de Productos
 
 **Tipo:** Array<Object>  
-**Tamaño:** 24 productos  
+**Tamaño:** 27 productos (24 con imágenes locales + 3 productos salvadoreños con imágenes externas)  
 **Categorías:**
 - Electronics: 7 productos
 - Clothing & Accessories: 5 productos
-- Home: 5 productos
+- Home: 6 productos (5 locales + 1 salvadoreño)
 - Collectibles: 7 productos
+- Food: 1 producto (salvadoreño)
+- Crafts: 1 producto (salvadoreño)
 
 ---
 
@@ -836,7 +838,64 @@ handleSellerRegistration(formData) {
 
 ---
 
+---
+
+## Productos Salvadoreños Adicionales
+
+### Función: `loadSalvadorProducts()`
+**Tipo:** Método de instancia  
+**Parámetros:** Ninguno  
+**Retorna:** void  
+**Propósito:** Carga 3 productos adicionales salvadoreños con imágenes de Unsplash
+
+```javascript
+loadSalvadorProducts() {
+    const salvadorProducts = [
+        {
+            id: 100,
+            title: "Café Salvadoreño Premium",
+            image: "https://images.unsplash.com/..." // URL externa
+            // ... más propiedades
+        },
+        {
+            id: 102,
+            title: "Artesanía de Barro Negro",
+            image: "https://images.unsplash.com/..." // URL externa
+        },
+        {
+            id: 103,
+            title: "Hamaca Salvadoreña Tejida",
+            image: "https://images.unsplash.com/..." // URL externa
+        }
+    ];
+    // Tipo: Array<Product>
+    
+    this.products = [...this.products, ...salvadorProducts];
+    // Combina productos locales con salvadoreños
+}
+```
+
+### Función: `initSalvadorFeatures()`
+**Tipo:** Método de instancia  
+**Parámetros:** Ninguno  
+**Retorna:** void  
+**Propósito:** Inicializa características específicas de El Salvador
+
+```javascript
+initSalvadorFeatures() {
+    this.loadSalvadorProducts();
+    // Carga los 3 productos salvadoreños adicionales
+    
+    // Configura cálculo de envío por departamento
+    // ... más configuraciones locales
+}
+```
+
+**Nota:** Esta función se llama automáticamente al inicializar la aplicación, agregando los 3 productos salvadoreños al catálogo principal.
+
+---
+
 **Última actualización:** Noviembre 2024  
 **Versión:** 1.0  
-**Total de funciones documentadas:** 30+  
-**Total de productos:** 24
+**Total de funciones documentadas:** 32+  
+**Total de productos:** 27 (24 locales + 3 salvadoreños)
