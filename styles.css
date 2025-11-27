@@ -1717,15 +1717,15 @@ select:focus {
         font-size: 2.5rem;
     }
     
-    .hero-buttons {
-        flex-direction: column;
-        align-items: center;
+        .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
     }
-    
-    .btn-hero-primary, .btn-hero-secondary {
-        width: 100%;
-        max-width: 300px;
-    }
+
+
     
     .hero-stats {
         gap: 2rem;
