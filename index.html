@@ -7,6 +7,12 @@
     <title>Zonama - Marketplace de El Salvador</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <link 
+    rel="stylesheet" 
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
 </head>
 
 <body>
@@ -878,28 +884,44 @@
                         <div class="step active" data-step="1">
                             <h3>1. Dirección de Entrega</h3>
                             <form id="addressForm">
-                                <select required>
-                                    <option value="">Departamento</option>
-                                    <option value="san-salvador">San Salvador</option>
-                                    <option value="la-libertad">La Libertad</option>
-                                    <option value="santa-ana">Santa Ana</option>
-                                    <option value="san-miguel">San Miguel</option>
-                                    <option value="usulutan">Usulután</option>
-                                    <option value="la-paz">La Paz</option>
-                                    <option value="sonsonate">Sonsonate</option>
-                                    <option value="chalatenango">Chalatenango</option>
-                                    <option value="la-union">La Unión</option>
-                                    <option value="ahuachapan">Ahuachapán</option>
-                                    <option value="cabanas">Cabañas</option>
-                                    <option value="cuscatlan">Cuscatlán</option>
-                                    <option value="morazan">Morazán</option>
-                                    <option value="san-vicente">San Vicente</option>
-                                </select>
-                                <input type="text" placeholder="Municipio" required>
-                                <input type="text" placeholder="Dirección completa" required>
-                                <input type="tel" placeholder="Teléfono de contacto" required>
-                                <button type="button" class="btn-primary next-step">Continuar</button>
+                                <div class="form-group">
+                                    <label for="checkoutPhone">Teléfono de contacto *</label>
+                                    <input 
+                                        type="tel" 
+                                        id="checkoutPhone" 
+                                        placeholder="Ej: 7777-7777" 
+                                        required
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Ubicación en el mapa *</label>
+                                    <p class="help-text">
+                                        Mueve el mapa o el marcador para seleccionar tu dirección de entrega.
+                                    </p>
+
+                                    <!-- Aquí se dibuja el mapa -->
+                                    <div 
+                                        id="checkoutMap" 
+                                        style="
+                                            height: 300px; 
+                                            border-radius: 8px; 
+                                            overflow: hidden; 
+                                            margin-bottom: 10px;
+                                        "
+                                    ></div>
+
+                                    <!-- Datos que va a rellenar el javscript -->
+                                    <input type="hidden" id="checkoutLat">
+                                    <input type="hidden" id="checkoutLng">
+                                    <input type="hidden" id="checkoutAddress">
+                                </div>
+
+                                <button type="button" class="btn-primary next-step">
+                                    Continuar
+                                </button>
                             </form>
+
                         </div>
 
                         <div class="step" data-step="2">
@@ -991,6 +1013,7 @@
         </div>
     </footer>
 
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
 </body>
 
