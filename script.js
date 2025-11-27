@@ -458,7 +458,7 @@ class ECommerceApp {
                     type: "physical",
                     category: "books",
                     available: true,
-                    image: "https://static.wikia.nocookie.net/chainsaw-man/images/3/3a/Volumen_1.png/revision/latest?cb=20220922005416&path-prefix=es",
+                    image: "https://www.normaeditorial.com/upload/media/albumes/0001/07/thumb_6655_albumes_big.jpeg",
                     description: "El primer volumen de la exitosa serie Chainsaw Man. Denji obtiene el poder de transformarse en una motosierra humana para enfrentar demonios y sobrevivir en un mundo brutal.",
                     rating: 4.8,
                     specs: "Tapa blanda, 192 páginas"
