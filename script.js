@@ -8,6 +8,11 @@ class ECommerceApp {
         this.currentImageData = null;
         this.imageUploadConfigured = false;
         
+
+        //  Mapa de checkout (OJALA FUNCIONE AAAAAAAAAAGH)
+        this.checkoutMap = null;
+        this.checkoutMarker = null;
+
         this.init();
     }
 
@@ -27,6 +32,10 @@ class ECommerceApp {
         // Setup image upload functionality
         this.currentImageData = null;
         this.setupImageUpload();
+
+        // Inicializar mapa de checkout (si existe el contenedor)
+        this.setupCheckoutMap();
+
     }
 
     hideAllModals() {
@@ -1158,17 +1167,96 @@ searchProducts() {
         `).join('');
     }
 
+        //   MAPA DE CHECKOUT
+        setupCheckoutMap() {
+        // El contenedor del mapa debe existir para continuar
+        const mapContainer = document.getElementById('checkoutMap');
+        if (!mapContainer || typeof L === 'undefined') {
+            return;
+        }
+
+        // Centrar en San Salvador
+        const defaultLat = 13.6929;
+        const defaultLng = -89.2182;
+
+        this.checkoutMap = L.map('checkoutMap').setView([defaultLat, defaultLng], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(this.checkoutMap);
+
+        // Marcador arrastrable
+        this.checkoutMarker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(this.checkoutMap);
+
+        // Guardar coordenadas iniciales
+        this.updateCheckoutLocation(defaultLat, defaultLng);
+
+        // Click en el mapa mueve el marcador
+        this.checkoutMap.on('click', (e) => {
+            const { lat, lng } = e.latlng;
+            if (this.checkoutMarker) {
+                this.checkoutMarker.setLatLng(e.latlng);
+            }
+            this.updateCheckoutLocation(lat, lng);
+        });
+
+        // Arrastrar el marcador el marcador actualiza coordenadas
+        this.checkoutMarker.on('dragend', (e) => {
+            const { lat, lng } = e.target.getLatLng();
+            this.updateCheckoutLocation(lat, lng);
+        });
+    }
+
+        updateCheckoutLocation(lat, lng) {
+            const latInput = document.getElementById('mapLat');
+            const lngInput = document.getElementById('mapLng');
+            const addrInput = document.getElementById('mapAddress');
+            const summary = document.getElementById('addressSummary');
+
+            if (latInput) latInput.value = lat;
+            if (lngInput) lngInput.value = lng;
+
+            const text = `Ubicación seleccionada: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+
+            if (addrInput) addrInput.value = text;
+            if (summary) summary.textContent = text;
+    }
+
+    
     showCheckoutStep(step) {
         document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
         document.querySelector(`[data-step="${step}"]`).classList.add('active');
         this.currentStep = step;
     }
 
-    nextCheckoutStep() {
-        if (this.currentStep < 3) {
-            this.showCheckoutStep(this.currentStep + 1);
+ nextCheckoutStep() {
+    // Intentar construir el resumen de dirección (si existen los campos)
+    const addressForm = document.getElementById('addressForm');
+    if (addressForm) {
+        const department = addressForm.querySelector('select')?.value || '';
+        const municipality = document.getElementById('municipality')?.value || '';
+        const address = document.getElementById('address')?.value || '';
+        const phone = document.getElementById('phone')?.value || '';
+
+        const addressSummary = document.getElementById('addressSummary');
+        if (addressSummary) {
+            addressSummary.textContent = `
+${address || 'Dirección no especificada'}
+${municipality ? `, ${municipality}` : ''}
+${department ? `, ${department}` : ''}
+Teléfono: ${phone || 'No proporcionado'}
+            `.trim();
         }
     }
+
+    // Avanzar de paso sí o sí (máx. paso 3)
+    if (this.currentStep < 3) {
+        this.currentStep++;
+        this.showCheckoutStep(this.currentStep);
+    }
+}
+
 
     processPayment() {
         // Simulate payment processing
