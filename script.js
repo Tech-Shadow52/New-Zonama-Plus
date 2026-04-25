@@ -3,6 +3,7 @@ class ECommerceApp {
     constructor() {
         this.currentUser = null;
         this.cart = [];
+        this.wishlist = [];
         this.products = [];
         this.currentStep = 1;
         this.currentImageData = null;
@@ -885,36 +886,61 @@ searchInput.addEventListener('keypress', (e) => {
             return;
         }
 
-        grid.innerHTML = productsToShow.map(product => `
+        grid.innerHTML = productsToShow.map(product => {
+            const isInWishlist = this.isInWishlist(product.id);
+            const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+            const isNew = product.isNew || false;
+            
+            return `
             <div class="product-card" data-id="${product.id}">
                 <div class="product-image loading" onclick="showProductDetail(${product.id})" style="cursor: pointer;">
                     <img src="${product.image}" alt="${product.title}" loading="lazy" onload="this.classList.add('loaded'); this.parentElement.classList.remove('loading')" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\\'font-size:3rem;color:#dee2e6\\'>📷</div>'">
+                    ${isNew || hasDiscount ? `
+                    <div class="product-badges">
+                        ${isNew ? '<span class="product-badge new">Nuevo</span>' : ''}
+                        ${hasDiscount ? '<span class="product-badge sale">Oferta</span>' : ''}
+                    </div>
+                    ` : ''}
+                    <div class="product-actions">
+                        <button class="product-action-btn wishlist-btn ${isInWishlist ? 'active' : ''}" 
+                                onclick="event.stopPropagation(); app.toggleWishlist(${product.id})" 
+                                aria-label="${isInWishlist ? 'Quitar de favoritos' : 'Agregar a favoritos'}">
+                            <i class="${isInWishlist ? 'fas' : 'far'} fa-heart"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="product-info">
+                    <span class="product-category-tag">${this.getCategoryName(product.category)}</span>
                     <h3 class="product-title" onclick="showProductDetail(${product.id})" style="cursor: pointer;">${product.title}</h3>
-                    ${product.author ? `<p class="product-author">by ${product.author}</p>` : ''}
+                    ${product.author ? `<p class="product-brand">by ${product.author}</p>` : ''}
                     ${product.brand ? `<p class="product-brand">${product.brand}</p>` : ''}
                     ${product.seller ? `<p class="product-seller">Vendido por: ${product.seller}</p>` : ''}
                     ${product.location && product.type === 'physical' ? `<p class="product-location"><i class="fas fa-map-marker-alt"></i> ${product.location}</p>` : ''}
                     <div class="product-rating">
                         <div class="stars">${this.generateStars(product.rating)}</div>
-                        <span>${product.rating}</span>
+                        <span class="rating-count">(${product.rating})</span>
                     </div>
-                    <div class="product-price">$${product.price}</div>
+                    <div class="product-price">
+                        $${product.price.toFixed(2)}
+                        ${hasDiscount ? `<span class="original-price">$${product.originalPrice.toFixed(2)}</span>` : ''}
+                    </div>
                     <span class="product-type ${product.type}">${product.type === 'physical' ? 'Físico' : 'Digital'}</span>
                     <div class="product-availability ${product.available ? 'available' : 'unavailable'}">
-                        ${product.available ? '✓ Disponible' : '✗ No disponible'}
+                        <i class="fas fa-${product.available ? 'check' : 'times'}-circle"></i>
+                        ${product.available ? 'Disponible' : 'No disponible'}
                     </div>
-                    <button class="add-to-cart" ${!product.available ? 'disabled' : ''} 
-                            onclick="app.addToCart(${product.id})">
-                        ${product.available ? 'Agregar al Carrito' : 'No Disponible'}
-                    </button>
-                    <button class="view-details" onclick="showProductDetail(${product.id})">
-                        Ver Detalles
-                    </button>
+                    <div class="product-buttons">
+                        <button class="add-to-cart" ${!product.available ? 'disabled' : ''} 
+                                onclick="event.stopPropagation(); app.addToCart(${product.id})">
+                            <i class="fas fa-shopping-cart"></i> Agregar
+                        </button>
+                        <button class="view-details" onclick="event.stopPropagation(); showProductDetail(${product.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
         
         // Update filter counts
         this.updateFilterCounts();
@@ -1457,20 +1483,127 @@ if (product.category === 'misc') {
     }
 
     showNotification(message, type = 'success') {
+        // Create notification container if it doesn't exist
+        let container = document.querySelector('.notification-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.className = 'notification-container';
+            document.body.appendChild(container);
+        }
+
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
-        notification.textContent = message;
-        notification.setAttribute('role', 'alert');
-        notification.setAttribute('aria-live', 'assertive');
         
-        document.body.appendChild(notification);
+        // Icon based on type
+        const icons = {
+            success: 'fas fa-check-circle',
+            error: 'fas fa-times-circle',
+            warning: 'fas fa-exclamation-triangle',
+            info: 'fas fa-info-circle'
+        };
+        
+        notification.innerHTML = `
+            <i class="${icons[type] || icons.success}"></i>
+            <span>${message}</span>
+            <button class="close-notification" aria-label="Cerrar">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        container.appendChild(notification);
+        
+        // Close button functionality
+        notification.querySelector('.close-notification').addEventListener('click', () => {
+            notification.classList.add('hiding');
+            setTimeout(() => notification.remove(), 300);
+        });
         
         // Announce to screen readers
         this.announceToScreenReader(message);
         
+        // Auto remove after 4 seconds
         setTimeout(() => {
-            notification.remove();
+            if (notification.parentNode) {
+                notification.classList.add('hiding');
+                setTimeout(() => notification.remove(), 300);
+            }
         }, 4000);
+    }
+
+    // Wishlist functionality
+    toggleWishlist(productId) {
+        const product = this.products.find(p => p.id === productId);
+        if (!product) return;
+
+        const index = this.wishlist.findIndex(p => p.id === productId);
+        
+        if (index > -1) {
+            // Remove from wishlist
+            this.wishlist.splice(index, 1);
+            this.showNotification('Producto eliminado de favoritos', 'info');
+        } else {
+            // Add to wishlist
+            this.wishlist.push(product);
+            this.showNotification('Producto agregado a favoritos', 'success');
+        }
+        
+        this.updateWishlistDisplay();
+        this.updateProductCardWishlistButton(productId);
+    }
+
+    updateWishlistDisplay() {
+        const wishlistCount = document.getElementById('wishlistCount');
+        if (wishlistCount) {
+            wishlistCount.textContent = this.wishlist.length;
+        }
+    }
+
+    updateProductCardWishlistButton(productId) {
+        const btn = document.querySelector(`.product-card[data-id="${productId}"] .wishlist-btn`);
+        if (btn) {
+            const isInWishlist = this.wishlist.some(p => p.id === productId);
+            btn.classList.toggle('active', isInWishlist);
+            btn.innerHTML = isInWishlist ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
+        }
+    }
+
+    isInWishlist(productId) {
+        return this.wishlist.some(p => p.id === productId);
+    }
+
+    openWishlist() {
+        const wishlistItems = document.getElementById('wishlistItems');
+        const emptyState = document.querySelector('.wishlist-empty');
+        
+        if (this.wishlist.length === 0) {
+            wishlistItems.style.display = 'none';
+            emptyState.style.display = 'block';
+        } else {
+            wishlistItems.style.display = 'block';
+            emptyState.style.display = 'none';
+            
+            wishlistItems.innerHTML = this.wishlist.map(product => `
+                <div class="cart-item">
+                    <div class="cart-item-image">
+                        <img src="${product.image}" alt="${product.title}">
+                    </div>
+                    <div class="cart-item-info">
+                        <h4 class="cart-item-title">${product.title}</h4>
+                        <p class="cart-item-price">$${product.price.toFixed(2)}</p>
+                    </div>
+                    <div class="cart-item-actions">
+                        <button class="btn-primary" onclick="app.addToCart(${product.id}); app.toggleWishlist(${product.id});">
+                            <i class="fas fa-shopping-cart"></i> Agregar
+                        </button>
+                        <button class="btn-secondary" onclick="app.toggleWishlist(${product.id}); app.openWishlist();">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        this.showModal('wishlistModal');
     }
 
     // Seller functionality

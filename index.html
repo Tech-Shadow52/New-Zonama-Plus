@@ -33,7 +33,11 @@
             <div class="header-actions">
                 <button id="sellerBtn" class="btn-secondary">Vender en Zonama</button>
                 <button id="loginBtn" class="btn-primary">Iniciar Sesión</button>
-                <div class="cart-icon">
+                <div class="wishlist-icon" onclick="app.openWishlist()" aria-label="Ver favoritos">
+                    <i class="fas fa-heart"></i>
+                    <span id="wishlistCount" class="cart-count">0</span>
+                </div>
+                <div class="cart-icon" onclick="app.showModal('cartModal')" aria-label="Ver carrito">
                     <i class="fas fa-shopping-cart"></i>
                     <span id="cartCount" class="cart-count">0</span>
                 </div>
@@ -696,6 +700,24 @@
                     <div class="cart-total">
                         <h3>Total: $<span id="cartTotal">0.00</span></h3>
                         <button id="checkoutBtn" class="btn-primary">Proceder al Pago</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wishlist Modal -->
+        <div id="wishlistModal" class="modal" role="dialog" aria-label="Lista de favoritos" aria-modal="true">
+            <div class="modal-content">
+                <span class="close" aria-label="Cerrar favoritos">&times;</span>
+                <div class="cart-container">
+                    <h2><i class="fas fa-heart"></i> Mis Favoritos</h2>
+                    <div id="wishlistItems" class="cart-items">
+                        <!-- Wishlist items will be loaded here -->
+                    </div>
+                    <div class="wishlist-empty" style="display: none; text-align: center; padding: 2rem;">
+                        <i class="fas fa-heart-broken" style="font-size: 3rem; color: var(--color-border); margin-bottom: 1rem;"></i>
+                        <p style="color: var(--color-text-muted);">No tienes productos en favoritos</p>
+                        <button class="btn-primary" onclick="app.hideModal('wishlistModal')" style="margin-top: 1rem;">Explorar Productos</button>
                     </div>
                 </div>
             </div>
