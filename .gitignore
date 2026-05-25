@@ -1,0 +1,19 @@
+# Claude
+.claude/
+
+# .NET build output
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Uploads (imágenes subidas por usuarios)
+ZonamaAPI/wwwroot/uploads/
+
+# Secrets / configuración local
+ZonamaAPI/appsettings.Development.json
+
+# OS
+.DS_Store
+Thumbs.db
