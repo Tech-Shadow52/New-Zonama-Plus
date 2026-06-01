@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vende en Zonama — Centro de Vendedores El Salvador</title>
+  <meta name="description" content="Crea tu tienda en Zonama y vende a miles de compradores en El Salvador. Planes desde gratis. Fácil, rápido y seguro.">
+  <meta property="og:type"        content="website">
+  <meta property="og:title"       content="Vende en Zonama — Centro de Vendedores">
+  <meta property="og:description" content="Únete a 500+ vendedores salvadoreños en Zonama. Crea tu tienda gratis en 5 minutos.">
+  <meta property="og:url"         content="https://zonama.sv/seller">
+  <meta name="twitter:card"       content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <header class="header" id="mainHeader">
+    <div class="container">
+      <div class="logo">
+        <a href="index.html">
+          <img src="data/logo/Recurso 31-1.png" class="logo-icon-img" alt="Zonama">
+          Zonama
+        </a>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Inicio</a>
+        <a href="products.html" class="nav-link">Productos</a>
+        <a href="seller.html" class="nav-link active">Vendedores</a>
+      </nav>
+      <div style="flex:1"></div>
+      <div class="header-actions">
+        <a href="products.html" class="btn-secondary" style="display:inline-flex;align-items:center;gap:6px;">
+          <i class="fas fa-shopping-bag"></i> Explorar
+        </a>
+        <a href="index.html#hero" class="btn-primary" style="display:inline-flex;align-items:center;gap:6px;">
+          <i class="fas fa-user"></i> Entrar
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ============================================================
+         SELLER HERO
+    ============================================================ -->
+    <section class="seller-page-hero">
+      <div class="container">
+        <div class="hero-badge hero-badge-in" style="margin-bottom:18px">
+          <span class="hero-badge-dot"></span>
+          Centro de Vendedores
+        </div>
+        <h1 class="hero-animate-1">
+          Tu negocio,<br>
+          <span>todo El Salvador</span>
+        </h1>
+        <p class="hero-animate-2">
+          Zonama es el marketplace diseñado para el vendedor salvadoreño. Crea tu tienda en minutos,
+          llega a miles de compradores y haz crecer tu negocio sin complicaciones.
+        </p>
+        <div class="hero-buttons hero-animate-3">
+          <a href="index.html" onclick="setTimeout(()=>{ if(window.app) app.openSellerRegistration(); }, 300)" class="btn-hero-primary btn-press">
+            <i class="fas fa-store"></i>
+            Crear mi Tienda Gratis
+          </a>
+          <a href="#how-it-works" class="btn-hero-secondary btn-press">
+            <i class="fas fa-play-circle"></i>
+            Cómo funciona
+          </a>
+        </div>
+        <div class="hero-stats hero-animate-4">
+          <div class="stat">
+            <i class="fas fa-store"></i>
+            <span class="stat-number">500+</span>
+            <span class="stat-label">Vendedores Activos</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-users"></i>
+            <span class="stat-number">10,000+</span>
+            <span class="stat-label">Compradores</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-dollar-sign"></i>
+            <span class="stat-number">$50K+</span>
+            <span class="stat-label">Ventas / Mes</span>
+          </div>
+          <div class="stat">
+            <i class="fas fa-map-marker-alt"></i>
+            <span class="stat-number">14</span>
+            <span class="stat-label">Departamentos</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STATS STRIP
+    ============================================================ -->
+    <div class="stats-strip">
+      <div class="container">
+        <div class="stat-item reveal stagger-1">
+          <i class="fas fa-clock"></i>
+          <strong>5 min</strong>
+          <span>Configuración Inicial</span>
+        </div>
+        <div class="stat-item reveal stagger-2">
+          <i class="fas fa-percentage"></i>
+          <strong>3–8%</strong>
+          <span>Comisión por Venta</span>
+        </div>
+        <div class="stat-item reveal stagger-3">
+          <i class="fas fa-shield-alt"></i>
+          <strong>100%</strong>
+          <span>Pagos Protegidos</span>
+        </div>
+        <div class="stat-item reveal stagger-4">
+          <i class="fas fa-headset"></i>
+          <strong>24/7</strong>
+          <span>Soporte en Español</span>
+        </div>
+        <div class="stat-item reveal stagger-5">
+          <i class="fas fa-truck"></i>
+          <strong>14</strong>
+          <span>Departamentos con Envío</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         HOW IT WORKS
+    ============================================================ -->
+    <section class="how-it-works" id="how-it-works" style="background:var(--surface)">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">Proceso Simple</span>
+          <h2 class="section-title">Empieza a vender en 4 pasos</h2>
+          <p class="section-subtitle">Sin experiencia técnica necesaria. Si puedes usar un teléfono, puedes vender en Zonama.</p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card reveal stagger-1">
+            <div class="step-number">1</div>
+            <h3>Crea tu cuenta</h3>
+            <p>Regístrate gratis con tu email y número de teléfono. Sin tarjeta de crédito requerida.</p>
+            <div class="step-arrow"><i class="fas fa-chevron-right"></i></div>
+          </div>
+          <div class="step-card reveal stagger-2">
+            <div class="step-number">2</div>
+            <h3>Configura tu tienda</h3>
+            <p>Dale nombre, descripción y foto a tu tienda. Elige tu departamento y categoría principal.</p>
+            <div class="step-arrow"><i class="fas fa-chevron-right"></i></div>
+          </div>
+          <div class="step-card reveal stagger-3">
+            <div class="step-number">3</div>
+            <h3>Publica tus productos</h3>
+            <p>Sube fotos, describe tus productos y establece tus precios. Publicar es rápido y sencillo.</p>
+            <div class="step-arrow"><i class="fas fa-chevron-right"></i></div>
+          </div>
+          <div class="step-card reveal stagger-4">
+            <div class="step-number">4</div>
+            <h3>¡Empieza a vender!</h3>
+            <p>Recibe pedidos, coordina envíos y cobra de forma segura. Zonama se encarga de lo demás.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHY ZONAMA FOR SELLERS
+    ============================================================ -->
+    <section style="background:var(--bg)">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">Ventajas Exclusivas</span>
+          <h2 class="section-title">¿Por qué vender en Zonama?</h2>
+        </div>
+
+        <div class="benefits-grid">
+          <div class="benefit-card reveal stagger-1">
+            <i class="fas fa-users"></i>
+            <h3>Audiencia Local Masiva</h3>
+            <p>Accede instantáneamente a más de 10,000 compradores salvadoreños activos buscando productos como los tuyos.</p>
+          </div>
+          <div class="benefit-card reveal stagger-2">
+            <i class="fas fa-bolt"></i>
+            <h3>Configuración Instantánea</h3>
+            <p>Tu tienda estará en línea en menos de 5 minutos. Sin código, sin diseño, sin complicaciones técnicas.</p>
+          </div>
+          <div class="benefit-card reveal stagger-3">
+            <i class="fas fa-dollar-sign"></i>
+            <h3>Comisiones Competitivas</h3>
+            <p>Solo pagamos cuando tú vendes. Comisiones del 3 al 8% según tu plan — las más bajas del mercado.</p>
+          </div>
+          <div class="benefit-card reveal stagger-4">
+            <i class="fas fa-truck"></i>
+            <h3>Logística Integrada</h3>
+            <p>Acuerdos con empresas de mensajería para entregas rápidas en los 14 departamentos de El Salvador.</p>
+          </div>
+          <div class="benefit-card reveal stagger-5">
+            <i class="fas fa-chart-line"></i>
+            <h3>Panel de Análisis</h3>
+            <p>Visualiza tus ventas, productos más populares y tendencias para tomar mejores decisiones de negocio.</p>
+          </div>
+          <div class="benefit-card reveal stagger-6">
+            <i class="fas fa-mobile-alt"></i>
+            <h3>Pagos Flexibles</h3>
+            <p>Recibe pagos por tarjeta, Tigo Money, Chivo Wallet o efectivo. Tus clientes pagan como prefieran.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PRICING PLANS
+    ============================================================ -->
+    <section id="planes" style="background:var(--surface)">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label gold">Planes y Precios</span>
+          <h2 class="section-title">Elige el plan perfecto</h2>
+          <p class="section-subtitle">Comienza gratis. Actualiza cuando estés listo para crecer más.</p>
+        </div>
+
+        <div class="seller-plans-full">
+
+          <div class="plan-card-full reveal stagger-1">
+            <h3>Plan Básico</h3>
+            <div class="plan-price" style="margin:12px 0 4px">
+              <span class="price-amount">$0</span>
+              <span class="price-period">/mes</span>
+            </div>
+            <p>Perfecto para empezar</p>
+            <ul>
+              <li><i class="fas fa-check-circle"></i> Hasta 10 productos</li>
+              <li><i class="fas fa-check-circle"></i> Comisión del 8% por venta</li>
+              <li><i class="fas fa-check-circle"></i> Soporte por email</li>
+              <li><i class="fas fa-check-circle"></i> Panel de ventas básico</li>
+              <li><i class="fas fa-check-circle"></i> Listado en búsquedas</li>
+              <li><i class="fas fa-check-circle"></i> Página de tienda pública</li>
+            </ul>
+            <a href="index.html" class="btn-plan btn-plan-basic" style="display:block;padding:14px;text-align:center;">Comenzar Gratis</a>
+          </div>
+
+          <div class="plan-card-full featured reveal stagger-2">
+            <div class="plan-featured-badge">Más Popular</div>
+            <h3>Plan Profesional</h3>
+            <div class="plan-price" style="margin:12px 0 4px">
+              <span class="price-amount">$15</span>
+              <span class="price-period">/mes</span>
+            </div>
+            <p>Para negocios en crecimiento</p>
+            <ul>
+              <li><i class="fas fa-check-circle"></i> Productos ilimitados</li>
+              <li><i class="fas fa-check-circle"></i> Comisión del 5% por venta</li>
+              <li><i class="fas fa-check-circle"></i> Soporte prioritario 24/7</li>
+              <li><i class="fas fa-check-circle"></i> Análisis y reportes avanzados</li>
+              <li><i class="fas fa-check-circle"></i> Destacado en búsquedas</li>
+              <li><i class="fas fa-check-circle"></i> Promociones especiales</li>
+              <li><i class="fas fa-check-circle"></i> Badge de vendedor verificado</li>
+              <li><i class="fas fa-check-circle"></i> Descuentos en logística</li>
+            </ul>
+            <a href="index.html" class="btn-plan btn-plan-pro" style="display:block;padding:14px;text-align:center;">Elegir Plan Profesional</a>
+          </div>
+
+          <div class="plan-card-full reveal stagger-3">
+            <h3>Plan Empresarial</h3>
+            <div class="plan-price" style="margin:12px 0 4px">
+              <span class="price-amount">$40</span>
+              <span class="price-period">/mes</span>
+            </div>
+            <p>Para grandes volúmenes</p>
+            <ul>
+              <li><i class="fas fa-check-circle"></i> Todo del Plan Profesional</li>
+              <li><i class="fas fa-check-circle"></i> Comisión del 3% por venta</li>
+              <li><i class="fas fa-check-circle"></i> Gerente de cuenta dedicado</li>
+              <li><i class="fas fa-check-circle"></i> Publicidad destacada</li>
+              <li><i class="fas fa-check-circle"></i> API personalizada</li>
+              <li><i class="fas fa-check-circle"></i> Reportes personalizados</li>
+              <li><i class="fas fa-check-circle"></i> Integración con tu sistema</li>
+              <li><i class="fas fa-check-circle"></i> SLA garantizado</li>
+            </ul>
+            <a href="mailto:ventas@zonama.sv" class="btn-plan btn-plan-enterprise" style="display:block;padding:14px;text-align:center;">Contactar Ventas</a>
+          </div>
+
+        </div>
+
+        <p style="text-align:center;margin-top:24px;font-size:0.82rem;color:var(--text-3)">
+          Todos los planes incluyen pago de comisión solo cuando vendes. Sin costos fijos ocultos.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TESTIMONIALS
+    ============================================================ -->
+    <section style="background:var(--bg)">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label gold">Historias Reales</span>
+          <h2 class="section-title">Vendedores que ya crecen con Zonama</h2>
+        </div>
+        <div class="testimonials-grid">
+          <div class="testimonial-card reveal stagger-1">
+            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <div class="testimonial-quote">"</div>
+            <p>Zonama me ayudó a llevar mis artesanías de Ilobasco a compradores en todo el país. En 6 meses triplicé mis ventas sin necesitar tienda física.</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">CM</div>
+              <div class="testimonial-author-info"><strong>Carlos Martínez</strong><span>Artesanías El Barro — Cabañas</span></div>
+            </div>
+          </div>
+          <div class="testimonial-card reveal stagger-2">
+            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <div class="testimonial-quote">"</div>
+            <p>Tenía miedo de vender en línea pero Zonama lo hace muy fácil. El soporte en español y los tutoriales me guiaron desde el primer día.</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">AL</div>
+              <div class="testimonial-author-info"><strong>Ana Leticia Ramos</strong><span>Ropa Leticia Moda — Santa Ana</span></div>
+            </div>
+          </div>
+          <div class="testimonial-card reveal stagger-3">
+            <div class="testimonial-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+            <div class="testimonial-quote">"</div>
+            <p>Con el Plan Profesional mi tienda aparece primero en las búsquedas. Mis ingresos mensuales aumentaron un 240% en el primer trimestre.</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">JR</div>
+              <div class="testimonial-author-info"><strong>José Rodríguez</strong><span>TechSV Store — San Salvador</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FINAL CTA
+    ============================================================ -->
+    <section class="seller-cta-banner">
+      <div class="container" style="text-align:center">
+        <span class="section-label" style="display:inline-block;margin-bottom:16px;background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.8)">Empieza Hoy</span>
+        <h2 class="reveal" style="color:white;font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);font-weight:900;letter-spacing:-1.5px;margin-bottom:14px">
+          ¿Listo para vender<br>en todo El Salvador?
+        </h2>
+        <p class="reveal stagger-1" style="color:rgba(255,255,255,0.70);font-size:1.1rem;max-width:500px;margin:0 auto 32px;">
+          Crea tu tienda gratis en menos de 5 minutos. Sin tarjeta de crédito, sin compromisos.
+        </p>
+        <div class="reveal stagger-2" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+          <a href="index.html" class="btn-cta-gold btn-press" style="display:inline-flex;align-items:center;gap:10px">
+            <i class="fas fa-store"></i>
+            Crear mi Tienda Gratis
+          </a>
+          <a href="#planes" class="btn-hero-secondary btn-press" style="display:inline-flex;align-items:center;gap:10px">
+            <i class="fas fa-list"></i>
+            Ver Planes
+          </a>
+        </div>
+        <p class="reveal stagger-3" style="color:rgba(255,255,255,0.45);font-size:0.82rem;margin-top:16px">
+          Sin tarjeta de crédito requerida • Configuración en 5 minutos • Soporte en español
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section style="background:var(--surface)">
+      <div class="container" style="max-width:720px">
+        <div class="section-header reveal">
+          <span class="section-label">Preguntas Frecuentes</span>
+          <h2 class="section-title">Resolvemos tus dudas</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <details class="reveal stagger-1" style="background:var(--surface-2);border:2px solid var(--border);border-radius:var(--r-lg);padding:18px;cursor:pointer">
+            <summary style="font-family:var(--font-display);font-weight:700;font-size:1rem;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center">
+              ¿Cuánto cuesta crear una tienda en Zonama?
+              <i class="fas fa-plus" style="color:var(--brand);font-size:0.9rem;flex-shrink:0"></i>
+            </summary>
+            <p style="margin-top:12px;font-size:0.875rem;color:var(--text-2);line-height:1.65">Crear tu tienda es completamente gratis con el Plan Básico. Solo pagas una comisión del 8% cuando realizas una venta, es decir, si no vendes, no pagas nada.</p>
+          </details>
+          <details class="reveal stagger-2" style="background:var(--surface-2);border:2px solid var(--border);border-radius:var(--r-lg);padding:18px;cursor:pointer">
+            <summary style="font-family:var(--font-display);font-weight:700;font-size:1rem;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center">
+              ¿Cómo recibo mis pagos?
+              <i class="fas fa-plus" style="color:var(--brand);font-size:0.9rem;flex-shrink:0"></i>
+            </summary>
+            <p style="margin-top:12px;font-size:0.875rem;color:var(--text-2);line-height:1.65">Los pagos se procesan de forma segura y se depositan en tu cuenta bancaria o billetera digital (Tigo Money, Chivo Wallet) dentro de 24–48 horas después de confirmar la entrega.</p>
+          </details>
+          <details class="reveal stagger-3" style="background:var(--surface-2);border:2px solid var(--border);border-radius:var(--r-lg);padding:18px;cursor:pointer">
+            <summary style="font-family:var(--font-display);font-weight:700;font-size:1rem;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center">
+              ¿Puedo vender productos digitales?
+              <i class="fas fa-plus" style="color:var(--brand);font-size:0.9rem;flex-shrink:0"></i>
+            </summary>
+            <p style="margin-top:12px;font-size:0.875rem;color:var(--text-2);line-height:1.65">Sí. Zonama soporta tanto productos físicos como digitales. Para productos digitales, la entrega es inmediata y automática después del pago. No se aplican costos de envío.</p>
+          </details>
+          <details class="reveal stagger-4" style="background:var(--surface-2);border:2px solid var(--border);border-radius:var(--r-lg);padding:18px;cursor:pointer">
+            <summary style="font-family:var(--font-display);font-weight:700;font-size:1rem;color:var(--text);list-style:none;display:flex;justify-content:space-between;align-items:center">
+              ¿Zonama ayuda con los envíos?
+              <i class="fas fa-plus" style="color:var(--brand);font-size:0.9rem;flex-shrink:0"></i>
+            </summary>
+            <p style="margin-top:12px;font-size:0.875rem;color:var(--text-2);line-height:1.65">Sí. Tenemos alianzas con empresas de mensajería local para entregas en todos los departamentos de El Salvador. Los vendedores del Plan Profesional y Empresarial reciben tarifas preferenciales.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="data/logo/Recurso 31-1.png" alt="Zonama">
+            Zonama
+          </div>
+          <p class="footer-desc">El marketplace que conecta a El Salvador. Comprá, vendé y descubrí productos auténticos de tu país.</p>
+          <div class="footer-social">
+            <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-btn" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-btn" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Compradores</h4>
+          <ul><li><a href="#">Cómo comprar</a></li><li><a href="#">Métodos de pago</a></li><li><a href="#">Envíos y entregas</a></li><li><a href="#">Devoluciones</a></li></ul>
+        </div>
+        <div class="footer-col">
+          <h4>Vendedores</h4>
+          <ul><li><a href="seller.html">Vender en Zonama</a></li><li><a href="#planes">Planes y precios</a></li><li><a href="#">Centro de vendedores</a></li></ul>
+        </div>
+        <div class="footer-col">
+          <h4>Soporte</h4>
+          <ul><li><a href="#">Centro de ayuda</a></li><li><a href="#">Contacto</a></li><li><a href="#">Términos</a></li><li><a href="#">Privacidad</a></li></ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Zonama. Todos los derechos reservados.</p>
+        <div class="footer-sv">
+          <div class="sv-flag"><div class="sv-flag-stripe"></div><div class="sv-flag-stripe"></div><div class="sv-flag-stripe"></div></div>
+          Hecho con orgullo en El Salvador
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+      }, { threshold: 0.10, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(el => io.observe(el));
+
+      const header   = document.getElementById('mainHeader');
+      const progress = document.getElementById('scrollProgress');
+      const maxScroll = () => document.documentElement.scrollHeight - window.innerHeight;
+      window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        header.classList.toggle('scrolled', y > 40);
+        if (progress) progress.style.transform = `scaleX(${Math.min(y / maxScroll(), 1)})`;
+      }, { passive: true });
+
+      /* 3D tilt for step-cards and plan-cards */
+      ['.step-card', '.plan-card-full', '.benefit-card', '.testimonial-card'].forEach(sel => {
+        document.querySelectorAll(sel).forEach(card => {
+          card.addEventListener('mousemove', e => {
+            const r = card.getBoundingClientRect(), TILT = 5;
+            card.style.setProperty('--rx', `${(-(((e.clientY-r.top)/r.height)-0.5)*TILT).toFixed(2)}deg`);
+            card.style.setProperty('--ry', `${((((e.clientX-r.left)/r.width)-0.5)*TILT).toFixed(2)}deg`);
+            card.style.transform = `translateY(-6px) rotateX(var(--rx)) rotateY(var(--ry))`;
+          });
+          card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

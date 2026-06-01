@@ -2,1106 +2,1689 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zonama - Marketplace de El Salvador</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zonama — Marketplace de El Salvador</title>
+  <meta name="description" content="El marketplace que conecta a vendedores locales con compradores en todo El Salvador. Compra y vende productos auténticos salvadoreños.">
 
-    <link 
-    rel="stylesheet" 
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-/>
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:title"       content="Zonama — Marketplace de El Salvador">
+  <meta property="og:description" content="El marketplace que une a vendedores locales con compradores en todo El Salvador. Artesanías, tecnología, ropa, comida — todo en un lugar.">
+  <meta property="og:url"         content="https://zonama.sv/">
+  <meta property="og:image"       content="https://zonama.sv/data/logo/Recurso 31-1.png">
+  <meta name="twitter:card"       content="summary_large_image">
+  <meta name="twitter:title"      content="Zonama — Marketplace de El Salvador">
+  <meta name="twitter:description" content="El marketplace salvadoreño. Compra y vende productos auténticos.">
 
+  <!-- Performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/animations.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <!-- Extra modal/product-detail styles that depend on original structure -->
+  <style>
+    /* Product detail modal layout */
+    .product-detail-modal { max-width: 900px; }
+    .product-detail-container {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr 260px;
+      gap: 24px;
+    }
+    .product-detail-left {}
+    .product-image-main {
+      position: relative;
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      aspect-ratio: 1;
+      background: var(--bg-2);
+      cursor: zoom-in;
+    }
+    .product-image-main img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .zoom-hint {
+      position: absolute;
+      bottom: 10px; right: 10px;
+      padding: 5px 12px;
+      background: rgba(0,0,0,0.55);
+      color: white;
+      border-radius: var(--r-full);
+      font-size: 0.72rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .product-image-main:hover .zoom-hint { opacity: 1; }
+    .product-title-main {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .product-brand-line {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      margin-bottom: 8px;
+      display: flex;
+      gap: 6px;
+    }
+    .brand-label { color: var(--text-3); }
+    .brand-name { color: var(--brand); font-weight: 600; }
+    .product-rating-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .stars-large { color: var(--gold-400); font-size: 1rem; }
+    .rating-text { font-size: 0.875rem; color: var(--text-2); font-weight: 600; }
+    .divider { height: 1px; background: var(--border); margin: 14px 0; }
+    .product-price-box { margin-bottom: 4px; }
+    .price-label { font-size: 0.78rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .price-main {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--brand-dark);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .price-shipping { font-size: 0.78rem; color: var(--success); font-weight: 600; }
+    .product-about h3, .product-specs h3 {
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .product-description-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.65; }
+    .specs-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    .specs-table tr { border-bottom: 1px solid var(--border); }
+    .specs-table td { padding: 7px 0; font-size: 0.82rem; vertical-align: top; }
+    .spec-label { color: var(--text-3); width: 45%; padding-right: 10px; font-weight: 600; }
+    .spec-value { color: var(--text-2); }
+    .buy-box {
+      background: var(--surface-2);
+      border: 2px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .buy-box-price {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--brand-dark);
+    }
+    .stock-status {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .delivery-info { display: flex; flex-direction: column; gap: 10px; }
+    .delivery-line {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--text-2);
+    }
+    .delivery-line i { color: var(--brand); flex-shrink: 0; margin-top: 2px; }
+    .delivery-date { font-size: 0.78rem; color: var(--text-3); margin-top: 2px; }
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.82rem;
+      color: var(--text-2);
+      font-weight: 600;
+    }
+    .quantity-select {
+      padding: 6px 10px;
+      border: 2px solid var(--border);
+      border-radius: var(--r-sm);
+      font-size: 0.85rem;
+      background: var(--surface);
+      cursor: pointer;
+    }
+    .btn-add-to-cart {
+      width: 100%;
+      padding: 13px;
+      background: var(--gold-400);
+      color: #0D1117;
+      border-radius: var(--r-sm);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--t);
+    }
+    .btn-add-to-cart:hover { background: var(--gold-300); box-shadow: var(--sh-gold); }
+    .btn-buy-now {
+      width: 100%;
+      padding: 13px;
+      background: var(--brand);
+      color: white;
+      border-radius: var(--r-sm);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--t);
+    }
+    .btn-buy-now:hover { background: var(--brand-dark); box-shadow: var(--sh-brand); }
+    .secure-transaction {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-3);
+    }
+    .secure-transaction i { color: var(--success); }
+    .seller-info { font-size: 0.82rem; display: flex; flex-direction: column; gap: 4px; }
+    .seller-line { display: flex; gap: 6px; color: var(--text-2); }
+    .return-policy {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--brand);
+      font-weight: 600;
+    }
+    .help-text { font-size: 0.82rem; color: var(--text-3); margin-bottom: 8px; }
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .payment-methods label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--bg);
+      border-radius: var(--r-sm);
+      border: 2px solid var(--border);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-2);
+      transition: var(--t);
+    }
+    .payment-methods label:hover { border-color: var(--brand); color: var(--brand); background: var(--sv-50); }
+    .payment-methods input[type="radio"] { accent-color: var(--brand); }
+    .payment-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .wishlist-empty { display: none; text-align: center; padding: 2rem; }
+    .lightbox-modal .modal-content {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      max-width: 90vw;
+      text-align: center;
+    }
+    .lightbox-content { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    #lightboxImage { max-height: 82vh; width: auto; max-width: 100%; border-radius: var(--r-lg); }
+    .lightbox-caption { color: rgba(255,255,255,0.75); font-size: 0.875rem; }
+    #checkoutMap { height: 300px; border-radius: var(--r-sm); overflow: hidden; }
+    .checkout-container h2 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+    .checkout-steps .step { display: none; }
+    .checkout-steps .step.active { display: block; }
+    .checkout-steps .step h3 {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .order-confirmation-success {
+      text-align: center;
+      padding: 28px 0;
+    }
+    .order-confirmation-success i {
+      font-size: 3.5rem;
+      color: var(--success);
+      margin-bottom: 14px;
+      display: block;
+    }
+    .order-confirmation-success h3 {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    /* Seller products in dashboard */
+    .seller-product-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      background: var(--surface-2);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--border);
+    }
+    .seller-product-item img {
+      width: 56px; height: 56px;
+      border-radius: var(--r-sm);
+      object-fit: cover;
+    }
+    .seller-product-info { flex: 1; min-width: 0; }
+    .seller-product-info h4 { font-size: 0.9rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .seller-product-info p { font-size: 0.8rem; color: var(--text-3); }
+    .btn-delete-product {
+      padding: 6px 12px;
+      background: var(--error);
+      color: white;
+      border-radius: var(--r-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+      transition: var(--t);
+    }
+    .btn-delete-product:hover { filter: brightness(1.1); }
+    /* Order card in orders modal */
+    .order-card {
+      background: var(--surface-2);
+      border-radius: var(--r-lg);
+      border: 1px solid var(--border);
+      padding: 16px;
+    }
+    .order-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .order-card-header strong { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; }
+    .order-status {
+      padding: 3px 10px;
+      border-radius: var(--r-full);
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: var(--sv-50);
+      color: var(--brand);
+    }
+    /* Mobile product detail */
+    @media (max-width: 768px) {
+      .product-detail-container {
+        grid-template-columns: 1fr;
+      }
+      .product-detail-right {
+        order: -1;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <h1><img src="data/logo/Recurso 31-1.png" class="logo-icon-img"> Zonama</h1>
-            </div>
 
-            <div class="search-bar">
-                <label for="searchInput" class="sr-only">Buscar productos</label>
-                <input type="text" id="searchInput" placeholder="Buscar productos..." aria-label="Campo de búsqueda de productos">
-                <button id="searchBtn" aria-label="Buscar"><i class="fas fa-search" aria-hidden="true"></i></button>
-            </div>
+  <!-- Scroll progress bar -->
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
-            <div class="header-actions">
-                <button id="sellerBtn" class="btn-secondary">Vender en Zonama</button>
-                <button id="loginBtn" class="btn-primary">Iniciar Sesión</button>
-                <div class="orders-icon" id="ordersBtn" onclick="app.openOrders()" aria-label="Mis órdenes" style="display:none">
-                    <i class="fas fa-box"></i>
-                    <span id="ordersCount" class="cart-count">0</span>
-                </div>
-                <div class="wishlist-icon" onclick="app.openWishlist()" aria-label="Ver favoritos">
-                    <i class="fas fa-heart"></i>
-                    <span id="wishlistCount" class="cart-count">0</span>
-                </div>
-                <div class="cart-icon" onclick="app.showModal('cartModal')" aria-label="Ver carrito">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span id="cartCount" class="cart-count">0</span>
-                </div>
-            </div>
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <header class="header" id="mainHeader">
+    <div class="container">
+
+      <div class="logo">
+        <a href="index.html">
+          <img src="data/logo/Recurso 31-1.png" class="logo-icon-img" alt="Zonama">
+          Zonama
+        </a>
+      </div>
+
+      <nav class="nav-links" aria-label="Navegación principal">
+        <a href="index.html" class="nav-link active">Inicio</a>
+        <a href="products.html" class="nav-link">Productos</a>
+        <a href="seller.html" class="nav-link">Vendedores</a>
+      </nav>
+
+      <div class="search-bar">
+        <label for="searchInput" class="sr-only">Buscar productos</label>
+        <input type="text" id="searchInput" placeholder="Buscar productos en Zonama..." aria-label="Campo de búsqueda">
+        <button id="searchBtn" aria-label="Buscar">
+          <i class="fas fa-search" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <div class="header-actions">
+        <button id="sellerBtn" class="btn-secondary">
+          <i class="fas fa-store"></i> Vender
+        </button>
+        <button id="loginBtn" class="btn-primary">
+          <i class="fas fa-user"></i> Entrar
+        </button>
+        <div class="orders-icon" id="ordersBtn" onclick="app.openOrders()" aria-label="Mis órdenes" style="display:none" role="button" tabindex="0">
+          <i class="fas fa-box"></i>
+          <span id="ordersCount" class="cart-count">0</span>
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Hero -->
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content">
-                    <h1>Conectando a El Salvador</h1>
-                    <p>El marketplace que une a vendedores locales con compradores en todo el país</p>
-                    <div class="hero-buttons">
-                        <button class="btn-hero-primary" onclick="document.querySelector('.products').scrollIntoView({behavior: 'smooth'})">
-                            <i class="fas fa-shopping-bag"></i> Explorar Productos
-                        </button>
-                        <button class="btn-hero-secondary" id="heroSellerBtn">
-                            <i class="fas fa-store"></i> Vender en Zonama
-                        </button>
-
-                    </div>
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <i class="fas fa-users"></i>
-                            <span class="stat-number">10,000+</span>
-                            <span class="stat-label">Compradores</span>
-                        </div>
-                        <div class="stat">
-                            <i class="fas fa-store"></i>
-                            <span class="stat-number">500+</span>
-                            <span class="stat-label">Vendedores</span>
-                        </div>
-                        <div class="stat">
-                            <i class="fas fa-box"></i>
-                            <span class="stat-number">5,000+</span>
-                            <span class="stat-label">Productos</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Beneficios -->
-        <section class="benefits">
-            <div class="container">
-                <h2>¿Por qué elegir Zonama?</h2>
-                <div class="benefits-grid">
-                    <div class="benefit-card">
-                        <i class="fas fa-shipping-fast"></i>
-                        <h3>Envíos a Todo El Salvador</h3>
-                        <p>Alianzas con empresas de logística para entregas rápidas y económicas</p>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-shield-alt"></i>
-                        <h3>Compra Segura</h3>
-                        <p>Protección en cada transacción para compradores y vendedores</p>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-hand-holding-usd"></i>
-                        <h3>Precios Justos</h3>
-                        <p>Comisiones bajas para que vendedores locales crezcan</p>
-                    </div>
-                    <div class="benefit-card">
-                        <i class="fas fa-headset"></i>
-                        <h3>Soporte Local</h3>
-                        <p>Atención al cliente en español, siempre disponible</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Modulo LogIn/Registrar -->
-        <div id="authModal" class="modal" role="dialog" aria-label="Iniciar sesión o registrarse" aria-modal="true">
-            <div class="modal-content">
-                <span class="close" aria-label="Cerrar formulario">&times;</span>
-                <div class="auth-container">
-                    <div class="auth-tabs">
-                        <button class="tab-btn active" data-tab="login">Iniciar Sesión</button>
-                        <button class="tab-btn" data-tab="register">Crear Cuenta</button>
-                    </div>
-
-                    <div id="loginForm" class="auth-form active">
-                        <h2>Iniciar Sesión</h2>
-                        <form>
-                            <input type="email" placeholder="Email" required>
-                            <input type="password" placeholder="Contraseña" required>
-                            <button type="submit" class="btn-primary">Iniciar Sesión</button>
-                        </form>
-                    </div>
-
-                    <div id="registerForm" class="auth-form">
-                        <h2>Crear Cuenta</h2>
-                        <form>
-                            <input type="text" placeholder="Nombre completo" required>
-                            <input type="email" placeholder="Email" required>
-                            <input type="tel" placeholder="Teléfono (opcional)">
-                            <select required>
-                                <option value="">Departamento</option>
-                                <option value="san-salvador">San Salvador</option>
-                                <option value="la-libertad">La Libertad</option>
-                                <option value="santa-ana">Santa Ana</option>
-                                <option value="san-miguel">San Miguel</option>
-                                <option value="usulutan">Usulután</option>
-                                <option value="la-paz">La Paz</option>
-                                <option value="sonsonate">Sonsonate</option>
-                                <option value="chalatenango">Chalatenango</option>
-                                <option value="la-union">La Unión</option>
-                                <option value="ahuachapan">Ahuachapán</option>
-                                <option value="cabanas">Cabañas</option>
-                                <option value="cuscatlan">Cuscatlán</option>
-                                <option value="morazan">Morazán</option>
-                                <option value="san-vicente">San Vicente</option>
-                            </select>
-                            <input type="password" placeholder="Contraseña" required>
-                            <input type="password" placeholder="Confirmar contraseña" required>
-                            <button type="submit" class="btn-primary">Crear Cuenta</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+        <div class="wishlist-icon" onclick="app.openWishlist()" aria-label="Ver favoritos" role="button" tabindex="0">
+          <i class="fas fa-heart"></i>
+          <span id="wishlistCount" class="cart-count">0</span>
         </div>
+        <div class="cart-icon" onclick="app.showModal('cartModal')" aria-label="Ver carrito" role="button" tabindex="0">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cartCount" class="cart-count">0</span>
+        </div>
+      </div>
 
-        <!-- Modulo Vender en Zonama -->
-        <div id="sellerModal" class="modal" role="dialog" aria-label="Vender en Zonama" aria-modal="true">
-            <div class="modal-content seller-modal">
-                <span class="close" aria-label="Cerrar">&times;</span>
-                <div class="seller-container">
-                    <!-- Hero Section -->
-                    <div class="seller-hero">
-                        <h1>Vende en Zonama</h1>
-                        <p class="seller-tagline">El marketplace que conecta a vendedores salvadoreños con miles de compradores</p>
-                        <div class="seller-stats">
-                            <div class="stat-item">
-                                <strong>500+</strong>
-                                <span>Vendedores activos</span>
-                            </div>
-                            <div class="stat-item">
-                                <strong>10,000+</strong>
-                                <span>Compradores mensuales</span>
-                            </div>
-                            <div class="stat-item">
-                                <strong>$50K+</strong>
-                                <span>Ventas mensuales</span>
-                            </div>
-                        </div>
-                    </div>
+    </div>
+  </header>
 
-                    <!-- Por que Zonama -->
-                    <div class="why-sell-section">
-                        <h2>¿Por qué vender en Zonama?</h2>
-                        <div class="why-sell-grid">
-                            <div class="why-sell-card">
-                                <div class="icon-circle">
-                                    <i class="fas fa-store"></i>
-                                </div>
-                                <h3>Fácil de empezar</h3>
-                                <p>Crea tu tienda en minutos. Sin costos iniciales ni complicaciones técnicas.</p>
-                            </div>
-                            <div class="why-sell-card">
-                                <div class="icon-circle">
-                                    <i class="fas fa-users"></i>
-                                </div>
-                                <h3>Audiencia local</h3>
-                                <p>Accede a miles de compradores salvadoreños buscando productos como los tuyos.</p>
-                            </div>
-                            <div class="why-sell-card">
-                                <div class="icon-circle">
-                                    <i class="fas fa-truck"></i>
-                                </div>
-                                <h3>Logística integrada</h3>
-                                <p>Alianzas con empresas de envío para entregas rápidas en todo El Salvador.</p>
-                            </div>
-                            <div class="why-sell-card">
-                                <div class="icon-circle">
-                                    <i class="fas fa-dollar-sign"></i>
-                                </div>
-                                <h3>Pagos seguros</h3>
-                                <p>Recibe tus pagos de forma segura y rápida. Múltiples métodos de pago disponibles.</p>
-                            </div>
-                        </div>
-                    </div>
+  <main>
 
-                    <!-- Sección de Planes -->
-                    <div class="plans-section">
-                        <h2>Elige el plan perfecto para tu negocio</h2>
-                        <p class="plans-subtitle">Comienza gratis y crece a tu ritmo</p>
-                        
-                        <div class="seller-plans">
-                            <!-- Plan Básico -->
-                            <div class="plan-card">
-                                <div class="plan-header">
-                                    <h3>Plan Básico</h3>
-                                    <div class="plan-price">
-                                        <span class="price-amount">$0</span>
-                                        <span class="price-period">/mes</span>
-                                    </div>
-                                    <p class="plan-description">Perfecto para empezar</p>
-                                </div>
-                                <ul class="plan-features">
-                                    <li><i class="fas fa-check-circle"></i> Hasta 10 productos</li>
-                                    <li><i class="fas fa-check-circle"></i> Comisión del 8% por venta</li>
-                                    <li><i class="fas fa-check-circle"></i> Soporte por email</li>
-                                    <li><i class="fas fa-check-circle"></i> Panel de ventas básico</li>
-                                    <li><i class="fas fa-check-circle"></i> Listado en búsquedas</li>
-                                </ul>
-                                <button class="btn-plan btn-plan-basic">Comenzar Gratis</button>
-                            </div>
+    <!-- ============================================================
+         HERO — Cinematic, Full Viewport
+    ============================================================ -->
+    <section class="hero" id="hero">
 
-                            <!-- Plan Profesional -->
-                            <div class="plan-card plan-featured">
-                                <div class="plan-badge">Más Popular</div>
-                                <div class="plan-header">
-                                    <h3>Plan Profesional</h3>
-                                    <div class="plan-price">
-                                        <span class="price-amount">$15</span>
-                                        <span class="price-period">/mes</span>
-                                    </div>
-                                    <p class="plan-description">Para negocios en crecimiento</p>
-                                </div>
-                                <ul class="plan-features">
-                                    <li><i class="fas fa-check-circle"></i> Productos ilimitados</li>
-                                    <li><i class="fas fa-check-circle"></i> Comisión del 5% por venta</li>
-                                    <li><i class="fas fa-check-circle"></i> Soporte prioritario 24/7</li>
-                                    <li><i class="fas fa-check-circle"></i> Análisis y reportes avanzados</li>
-                                    <li><i class="fas fa-check-circle"></i> Destacado en búsquedas</li>
-                                    <li><i class="fas fa-check-circle"></i> Promociones especiales</li>
-                                    <li><i class="fas fa-check-circle"></i> Badge de vendedor verificado</li>
-                                </ul>
-                                <button class="btn-plan btn-plan-pro">Elegir Plan Profesional</button>
-                            </div>
+      <!-- El Salvador flag stripe accent -->
+      <div class="hero-flag-accent" aria-hidden="true"></div>
 
-                            <!-- Plan Empresarial -->
-                            <div class="plan-card">
-                                <div class="plan-header">
-                                    <h3>Plan Empresarial</h3>
-                                    <div class="plan-price">
-                                        <span class="price-amount">$40</span>
-                                        <span class="price-period">/mes</span>
-                                    </div>
-                                    <p class="plan-description">Para grandes volúmenes</p>
-                                </div>
-                                <ul class="plan-features">
-                                    <li><i class="fas fa-check-circle"></i> Todo del Plan Profesional</li>
-                                    <li><i class="fas fa-check-circle"></i> Comisión del 3% por venta</li>
-                                    <li><i class="fas fa-check-circle"></i> Gerente de cuenta dedicado</li>
-                                    <li><i class="fas fa-check-circle"></i> Publicidad destacada</li>
-                                    <li><i class="fas fa-check-circle"></i> API personalizada</li>
-                                    <li><i class="fas fa-check-circle"></i> Reportes personalizados</li>
-                                    <li><i class="fas fa-check-circle"></i> Integración con tu sistema</li>
-                                </ul>
-                                <button class="btn-plan btn-plan-enterprise">Contactar Ventas</button>
-                            </div>
-                        </div>
-                    </div>
+      <!-- El Salvador coat-of-arms inspired SVG background -->
+      <svg class="hero-geo" viewBox="0 0 700 600" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Outer triangle (coat of arms) -->
+        <path d="M350 30 L680 560 L20 560 Z"
+              stroke="rgba(255,255,255,0.04)" stroke-width="1.5"
+              fill="rgba(255,255,255,0.015)"/>
+        <!-- Mid triangle -->
+        <path d="M350 100 L610 510 L90 510 Z"
+              stroke="rgba(212,146,10,0.08)" stroke-width="1"
+              fill="none"/>
+        <!-- Izalco volcano silhouette -->
+        <path d="M180 560 L330 295 L345 270 L360 295 L510 560 Z"
+              fill="rgba(212,146,10,0.06)"/>
+        <!-- Secondary volcano left -->
+        <path d="M50 560 L150 400 L160 385 L170 400 L270 560 Z"
+              fill="rgba(255,255,255,0.03)"/>
+        <!-- Secondary volcano right -->
+        <path d="M430 560 L530 410 L540 395 L550 410 L650 560 Z"
+              fill="rgba(255,255,255,0.03)"/>
+        <!-- Eruption glow at peak -->
+        <ellipse cx="350" cy="265" rx="18" ry="10"
+                 fill="rgba(212,146,10,0.20)"/>
+        <!-- Gold sun rays from peak -->
+        <line x1="350" y1="240" x2="350" y2="210" stroke="rgba(212,146,10,0.18)" stroke-width="1.5"/>
+        <line x1="350" y1="240" x2="370" y2="215" stroke="rgba(212,146,10,0.12)" stroke-width="1"/>
+        <line x1="350" y1="240" x2="330" y2="215" stroke="rgba(212,146,10,0.12)" stroke-width="1"/>
+        <line x1="350" y1="240" x2="385" y2="225" stroke="rgba(212,146,10,0.08)" stroke-width="1"/>
+        <line x1="350" y1="240" x2="315" y2="225" stroke="rgba(212,146,10,0.08)" stroke-width="1"/>
+        <!-- 5 stars (flag) -->
+        <circle cx="350" cy="180" r="4" fill="rgba(212,146,10,0.25)"/>
+        <circle cx="310" cy="195" r="3" fill="rgba(212,146,10,0.18)"/>
+        <circle cx="390" cy="195" r="3" fill="rgba(212,146,10,0.18)"/>
+        <circle cx="285" cy="220" r="2.5" fill="rgba(212,146,10,0.12)"/>
+        <circle cx="415" cy="220" r="2.5" fill="rgba(212,146,10,0.12)"/>
+      </svg>
 
-                    <!-- Testimonios -->
-                    <div class="success-section">
-                        <h2>Historias de éxito</h2>
-                        <div class="success-grid">
-                            <div class="success-card">
-                                <div class="quote-icon">"</div>
-                                <p>"Zonama me ayudó a llevar mi negocio de artesanías al siguiente nivel. Ahora vendo en todo San Salvador."</p>
-                                <div class="success-author">
-                                    <strong>María González</strong>
-                                    <span>Artesanías María</span>
-                                </div>
-                            </div>
-                            <div class="success-card">
-                                <div class="quote-icon">"</div>
-                                <p>"Como artesano de Ilobasco, Zonama me conectó con clientes que valoran el trabajo hecho a mano."</p>
-                                <div class="success-author">
-                                    <strong>Carlos Martínez</strong>
-                                    <span>Artesanías El Barro</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+      <div class="container">
 
-                    <!-- Sección CTA -->
-                    <div class="seller-cta">
-                        <h2>¿Listo para empezar a vender?</h2>
-                        <p>Únete a cientos de vendedores salvadoreños que ya confían en Zonama</p>
-                        <button class="btn-cta-large" onclick="app.openSellerRegistration()">Crear mi tienda gratis</button>
-                        <p class="cta-note">Sin tarjeta de crédito requerida • Configuración en 5 minutos</p>
-                    </div>
-                </div>
+        <!-- Left: text -->
+        <div class="hero-content">
+          <div class="hero-badge hero-badge-in">
+            <span class="hero-badge-dot"></span>
+            El Mercado de El Salvador
+          </div>
+
+          <h1 class="hero-animate-1">
+            Conectando<br>
+            <span class="highlight">El Salvador</span><br>
+            Contigo
+          </h1>
+
+          <p class="hero-animate-2">
+            El marketplace que une a vendedores locales con compradores en
+            todo el país. Artesanías, tecnología, ropa, comida — todo en un lugar.
+          </p>
+
+          <div class="hero-buttons hero-animate-3">
+            <button class="btn-hero-primary btn-press"
+                    onclick="document.querySelector('.products').scrollIntoView({behavior:'smooth'})">
+              <i class="fas fa-shopping-bag"></i>
+              Explorar Productos
+            </button>
+            <button class="btn-hero-secondary btn-press" id="heroSellerBtn">
+              <i class="fas fa-store"></i>
+              Vender en Zonama
+            </button>
+          </div>
+
+          <div class="hero-stats hero-animate-4">
+            <div class="stat">
+              <i class="fas fa-users"></i>
+              <span class="stat-number">10,000+</span>
+              <span class="stat-label">Compradores</span>
             </div>
+            <div class="stat">
+              <i class="fas fa-store"></i>
+              <span class="stat-number">500+</span>
+              <span class="stat-label">Vendedores</span>
+            </div>
+            <div class="stat">
+              <i class="fas fa-box"></i>
+              <span class="stat-number">5,000+</span>
+              <span class="stat-label">Productos</span>
+            </div>
+          </div>
         </div>
 
-        <!-- Modulo de registro de vendedores -->
-        <div id="sellerRegistrationModal" class="modal" role="dialog" aria-label="Registro de vendedor" aria-modal="true">
-            <div class="modal-content seller-registration-modal">
-                <span class="close" aria-label="Cerrar">&times;</span>
-                <div class="registration-container">
-                    <h2>Crea tu tienda en Zonama</h2>
-                    <p class="registration-subtitle">Completa tu información para empezar a vender</p>
-                    
-                    <form id="sellerRegistrationForm" class="seller-form">
-                        <div class="form-section">
-                            <h3>Información Personal</h3>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="sellerName">Nombre completo *</label>
-                                    <input type="text" id="sellerName" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="sellerEmail">Email *</label>
-                                    <input type="email" id="sellerEmail" required>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="sellerPhone">Teléfono *</label>
-                                    <input type="tel" id="sellerPhone" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="sellerPassword">Contraseña *</label>
-                                    <input type="password" id="sellerPassword" required>
-                                </div>
-                            </div>
-                        </div>
+        <!-- Right: floating product cards visual -->
+        <div class="hero-visual" aria-hidden="true">
 
-                        <div class="form-section">
-                            <h3>Información del Negocio</h3>
-                            <div class="form-group">
-                                <label for="storeName">Nombre de tu tienda *</label>
-                                <input type="text" id="storeName" required placeholder="Ej: Tienda de Coleccionables">
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="storeCategory">Categoría principal *</label>
-                                    <select id="storeCategory" required>
-                                        <option value="">Selecciona una categoría</option>
-                                        <option value="food">Comida Local</option>
-                                        <option value="crafts">Artesanías</option>
-                                        <option value="clothing">Ropa</option>
-                                        <option value="electronics">Electrónicos</option>
-                                        <option value="home">Hogar</option>
-                                        <option value="misc">Miscelánea</option>
-                                        <option value="books">Libros</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="storeDepartment">Departamento *</label>
-                                    <select id="storeDepartment" required>
-                                        <option value="">Selecciona tu departamento</option>
-                                        <option value="san-salvador">San Salvador</option>
-                                        <option value="la-libertad">La Libertad</option>
-                                        <option value="santa-ana">Santa Ana</option>
-                                        <option value="san-miguel">San Miguel</option>
-                                        <option value="usulutan">Usulután</option>
-                                        <option value="la-paz">La Paz</option>
-                                        <option value="sonsonate">Sonsonate</option>
-                                        <option value="chalatenango">Chalatenango</option>
-                                        <option value="la-union">La Unión</option>
-                                        <option value="ahuachapan">Ahuachapán</option>
-                                        <option value="cabanas">Cabañas</option>
-                                        <option value="cuscatlan">Cuscatlán</option>
-                                        <option value="morazan">Morazán</option>
-                                        <option value="san-vicente">San Vicente</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="storeDescription">Descripción de tu negocio *</label>
-                                <textarea id="storeDescription" rows="3" required placeholder="Cuéntanos sobre tu negocio..."></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-section">
-                            <h3>Plan de Vendedor</h3>
-                            <div class="plan-selector">
-                                <label class="plan-option">
-                                    <input type="radio" name="sellerPlan" value="basic" checked>
-                                    <div class="plan-option-content">
-                                        <strong>Plan Básico - Gratis</strong>
-                                        <span>Hasta 10 productos • Comisión 8%</span>
-                                    </div>
-                                </label>
-                                <label class="plan-option">
-                                    <input type="radio" name="sellerPlan" value="professional">
-                                    <div class="plan-option-content">
-                                        <strong>Plan Profesional - $15/mes</strong>
-                                        <span>Productos ilimitados • Comisión 5%</span>
-                                    </div>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="submit" class="btn-submit-seller">Crear mi tienda</button>
-                            <p class="form-note">Al registrarte, aceptas nuestros <a href="#">Términos y Condiciones</a></p>
-                        </div>
-                    </form>
-                </div>
+          <div class="hero-float-card hero-float-main float-2">
+            <div class="float-icon float-icon-gold">
+              <i class="fas fa-star"></i>
             </div>
+            <div class="float-text">
+              <strong>Producto destacado</strong>
+              <span>Artesanías El Salvador</span>
+            </div>
+          </div>
+
+          <div class="hero-float-card hero-float-card-1 float-1">
+            <div class="float-icon float-icon-green">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="float-text">
+              <strong>Venta completada</strong>
+              <span>Hace 2 minutos</span>
+            </div>
+            <div class="float-badge green">+$28</div>
+          </div>
+
+          <div class="hero-float-card hero-float-card-2 float-3">
+            <div class="float-icon float-icon-blue">
+              <i class="fas fa-store"></i>
+            </div>
+            <div class="float-text">
+              <strong>Nueva tienda</strong>
+              <span>San Salvador</span>
+            </div>
+            <div class="float-badge">Activa</div>
+          </div>
+
+          <div class="hero-float-card hero-float-card-3 float-4">
+            <div class="float-icon float-icon-gold">
+              <i class="fas fa-heart"></i>
+            </div>
+            <div class="float-text">
+              <strong>124 favoritos</strong>
+              <span>hoy</span>
+            </div>
+          </div>
+
+          <div class="hero-float-card hero-float-card-4 float-2">
+            <div class="float-icon float-icon-green">
+              <i class="fas fa-truck"></i>
+            </div>
+            <div class="float-text">
+              <strong>Envío rápido</strong>
+              <span>Todo El Salvador</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Scroll indicator -->
+      <div class="hero-scroll" aria-hidden="true">
+        <div class="hero-scroll-line"></div>
+        <span>Explorar</span>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STATS STRIP
+    ============================================================ -->
+    <div class="stats-strip">
+      <div class="container">
+        <div class="stat-item reveal stagger-1">
+          <i class="fas fa-users"></i>
+          <strong>10,000+</strong>
+          <span>Compradores Activos</span>
+        </div>
+        <div class="stat-item reveal stagger-2">
+          <i class="fas fa-store"></i>
+          <strong>500+</strong>
+          <span>Vendedores Activos</span>
+        </div>
+        <div class="stat-item reveal stagger-3">
+          <i class="fas fa-box"></i>
+          <strong>5,000+</strong>
+          <span>Productos Listados</span>
+        </div>
+        <div class="stat-item reveal stagger-4">
+          <i class="fas fa-dollar-sign"></i>
+          <strong>$50K+</strong>
+          <span>Ventas Mensuales</span>
+        </div>
+        <div class="stat-item reveal stagger-5">
+          <i class="fas fa-map-marker-alt"></i>
+          <strong>14</strong>
+          <span>Departamentos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         CATEGORIES
+    ============================================================ -->
+    <section class="categories" id="categories">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">Explorar por categoría</span>
+          <h2 class="section-title">¿Qué estás buscando hoy?</h2>
+          <p class="section-subtitle">Desde artesanías salvadoreñas hasta tecnología de punta, encuentra todo lo que necesitas</p>
         </div>
 
-        <!-- Modulo Dashboard vendedor -->
-        <div id="sellerDashboardModal" class="modal" role="dialog" aria-label="Panel de vendedor" aria-modal="true">
-            <div class="modal-content seller-dashboard-modal">
-                <span class="close" aria-label="Cerrar">&times;</span>
-                <div class="dashboard-container">
-                    <div class="dashboard-header">
-                        <h1>Mi Tienda</h1>
-                        <div class="dashboard-actions">
-                            <button class="btn-add-product" onclick="app.openAddProduct()">
-                                <i class="fas fa-plus"></i> Agregar Producto
-                            </button>
-                            <button class="btn-logout" onclick="app.logoutSeller()">
-                                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                            </button>
-                        </div>
-                    </div>
+        <div class="category-grid">
+          <div class="category-card reveal stagger-1" data-category="food">
+            <i class="fas fa-coffee"></i>
+            <h3>Comida Local</h3>
+          </div>
+          <div class="category-card reveal stagger-2" data-category="crafts">
+            <i class="fas fa-palette"></i>
+            <h3>Artesanías</h3>
+          </div>
+          <div class="category-card reveal stagger-3" data-category="clothing">
+            <i class="fas fa-tshirt"></i>
+            <h3>Ropa</h3>
+          </div>
+          <div class="category-card reveal stagger-4" data-category="electronics">
+            <i class="fas fa-laptop"></i>
+            <h3>Electrónicos</h3>
+          </div>
+          <div class="category-card reveal stagger-5" data-category="home">
+            <i class="fas fa-home"></i>
+            <h3>Hogar</h3>
+          </div>
+          <div class="category-card reveal stagger-6" data-category="misc">
+            <i class="fas fa-box-open"></i>
+            <h3>Miscelánea</h3>
+          </div>
+          <div class="category-card reveal stagger-7" data-category="books">
+            <i class="fas fa-book"></i>
+            <h3>Libros</h3>
+          </div>
+          <div class="category-card reveal stagger-8" data-category="all">
+            <i class="fas fa-th"></i>
+            <h3>Ver Todo</h3>
+          </div>
+        </div>
+      </div>
+    </section>
 
-                    <div class="dashboard-stats">
-                        <div class="stat-card">
-                            <i class="fas fa-box"></i>
-                            <div>
-                                <strong id="totalProducts">0</strong>
-                                <span>Productos</span>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-shopping-cart"></i>
-                            <div>
-                                <strong id="totalSales">0</strong>
-                                <span>Ventas</span>
-                            </div>
-                        </div>
-                        <div class="stat-card">
-                            <i class="fas fa-dollar-sign"></i>
-                            <div>
-                                <strong id="totalRevenue">$0</strong>
-                                <span>Ingresos</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-content">
-                        <h2>Mis Productos</h2>
-                        <div id="sellerProductsList" class="seller-products-list">
-                            <div class="empty-state">
-                                <i class="fas fa-box-open"></i>
-                                <p>Aún no tienes productos</p>
-                                <button class="btn-add-first" onclick="app.openAddProduct()">Agregar mi primer producto</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- ============================================================
+         PRODUCTS SECTION
+    ============================================================ -->
+    <section class="products" id="products-section">
+      <div class="container">
+        <div class="products-header">
+          <div>
+            <div style="margin-bottom:6px">
+              <span class="section-label">Marketplace</span>
             </div>
+            <h2 class="reveal">Todos los Productos</h2>
+          </div>
+
+          <div class="filter-bar">
+            <div class="filter-group">
+              <label class="filter-label sr-only">Tipo:</label>
+              <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all" onclick="app.filterByType('all')">
+                  <i class="fas fa-th"></i>
+                  <span>Todos</span>
+                  <span class="filter-count" id="countAll">0</span>
+                </button>
+                <button class="filter-btn" data-filter="physical" onclick="app.filterByType('physical')">
+                  <i class="fas fa-box"></i>
+                  <span>Físicos</span>
+                  <span class="filter-count" id="countPhysical">0</span>
+                </button>
+                <button class="filter-btn" data-filter="digital" onclick="app.filterByType('digital')">
+                  <i class="fas fa-download"></i>
+                  <span>Digitales</span>
+                  <span class="filter-count" id="countDigital">0</span>
+                </button>
+              </div>
+            </div>
+            <div class="sort-group">
+              <label class="filter-label" for="sortBy">Ordenar:</label>
+              <select id="sortBy" class="sort-select" onchange="app.sortProducts(this.value)">
+                <option value="featured">Destacados</option>
+                <option value="price-low">Precio: Menor a Mayor</option>
+                <option value="price-high">Precio: Mayor a Menor</option>
+                <option value="rating">Mejor Calificación</option>
+                <option value="newest">Más Recientes</option>
+              </select>
+            </div>
+          </div>
         </div>
 
-        <!-- Modulo agregar producto -->
-        <div id="addProductModal" class="modal" role="dialog" aria-label="Agregar producto" aria-modal="true">
-            <div class="modal-content add-product-modal">
-                <span class="close" aria-label="Cerrar">&times;</span>
-                <div class="add-product-container">
-                    <h2>Agregar Nuevo Producto</h2>
-                    
-                    <form id="addProductForm" class="product-form">
-                        <div class="form-group">
-                            <label for="productTitle">Nombre del producto *</label>
-                            <input type="text" id="productTitle" required placeholder="Ej: Figura Coleccionable Anime">
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="productPrice">Precio (USD) *</label>
-                                <input type="number" id="productPrice" step="0.01" min="0" required placeholder="0.00">
-                            </div>
-                            <div class="form-group">
-                                <label for="productCategory">Categoría *</label>
-                                <select id="productCategory" required>
-                                    <option value="">Selecciona una categoría</option>
-                                    <option value="food">Comida Local</option>
-                                    <option value="crafts">Artesanías</option>
-                                    <option value="clothing">Ropa</option>
-                                    <option value="electronics">Electrónicos</option>
-                                    <option value="home">Hogar</option>
-                                    <option value="books">Libros</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="productType">Tipo *</label>
-                                <select id="productType" required>
-                                    <option value="physical">Producto Físico</option>
-                                    <option value="digital">Producto Digital</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="productStock">Stock disponible *</label>
-                                <input type="number" id="productStock" min="0" required placeholder="0">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="productDescription">Descripción *</label>
-                            <textarea id="productDescription" rows="4" required placeholder="Describe tu producto..."></textarea>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="productImage">Imagen del producto *</label>
-                            
-                            <div class="image-upload-options">
-                                <div class="upload-tabs">
-                                    <button type="button" class="upload-tab active" data-tab="file" onclick="app.switchImageTab('file')">
-                                        <i class="fas fa-upload"></i> Subir archivo
-                                    </button>
-                                    <button type="button" class="upload-tab" data-tab="url" onclick="app.switchImageTab('url')">
-                                        <i class="fas fa-link"></i> URL de imagen
-                                    </button>
-                                </div>
-
-                                <div class="upload-content">
-                                    <!-- Subir imagen de producto -->
-                                    <div id="fileUploadTab" class="upload-tab-content active">
-                                        <div class="file-upload-area" id="fileUploadArea">
-                                            <input type="file" id="productImageFile" accept="image/*" style="display: none;">
-                                            <div class="upload-placeholder" onclick="document.getElementById('productImageFile').click()">
-                                                <i class="fas fa-cloud-upload-alt"></i>
-                                                <p>Haz clic para seleccionar una imagen</p>
-                                                <small>o arrastra y suelta aquí</small>
-                                                <small class="file-info">JPG, PNG, GIF (máx. 5MB)</small>
-                                            </div>
-                                            <div id="imagePreview" class="image-preview" style="display: none;">
-                                                <img id="previewImg" src="" alt="Vista previa">
-                                                <button type="button" class="btn-remove-image" onclick="app.removeImage()">
-                                                    <i class="fas fa-times"></i> Cambiar imagen
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Subir URL -->
-                                    <div id="urlUploadTab" class="upload-tab-content">
-                                        <input type="url" id="productImageUrl" placeholder="https://ejemplo.com/imagen.jpg">
-                                        <small>Ingresa la URL de una imagen de tu producto</small>
-                                        <button type="button" class="btn-preview-url" onclick="app.previewUrlImage()">
-                                            <i class="fas fa-eye"></i> Vista previa
-                                        </button>
-                                        <div id="urlImagePreview" class="image-preview" style="display: none;">
-                                            <img id="urlPreviewImg" src="" alt="Vista previa">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="productSpecs">Especificaciones (opcional)</label>
-                            <input type="text" id="productSpecs" placeholder="Ej: 100% algodón, Hecho a mano">
-                        </div>
-
-                        <div class="form-actions">
-                            <button type="button" class="btn-cancel" onclick="app.closeAddProduct()">Cancelar</button>
-                            <button type="submit" class="btn-submit-product">Publicar Producto</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+        <div id="productsGrid" class="products-grid">
+          <!-- Products rendered by script.js -->
         </div>
 
-        <!-- Categorías Productos -->
-        <section class="categories">
-            <div class="container">
-                <h2>Categorías</h2>
-                <div class="category-grid">
-                    <div class="category-card" data-category="food">
-                        <i class="fas fa-coffee"></i>
-                        <h3>Comida Local</h3>
-                    </div>
-                    <div class="category-card" data-category="crafts">
-                        <i class="fas fa-palette"></i>
-                        <h3>Artesanías</h3>
-                    </div>
-                    <div class="category-card" data-category="clothing">
-                        <i class="fas fa-tshirt"></i>
-                        <h3>Ropa</h3>
-                    </div>
-                    <div class="category-card" data-category="electronics">
-                        <i class="fas fa-laptop"></i>
-                        <h3>Electrónicos</h3>
-                    </div>
-                    <div class="category-card" data-category="home">
-                        <i class="fas fa-home"></i>
-                        <h3>Hogar</h3>
-                    </div>
-                    <div class="category-card" data-category="misc">
-                        <i class="fas fa-box-open"></i>
-                        <h3>Miscelánea</h3>
-                    </div>
-                    <div class="category-card" data-category="books">
-                        <i class="fas fa-book"></i>
-                        <h3>Libros</h3>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <div style="text-align:center; margin-top:36px">
+          <a href="products.html" class="btn-secondary" style="display:inline-flex; align-items:center; gap:8px; padding:12px 28px; font-size:0.95rem;">
+            <i class="fas fa-arrow-right"></i>
+            Ver todos en el catálogo completo
+          </a>
+        </div>
+      </div>
+    </section>
 
-        <!-- Seccion de Productos -->
-        <section class="products">
-            <div class="container">
-                <div class="products-header">
-                    <h2>Productos</h2>
-                    <div class="filter-bar">
-                        <div class="filter-group">
-                            <label class="filter-label">Tipo de producto:</label>
-                            <div class="filter-buttons">
-                                <button class="filter-btn active" data-filter="all" onclick="app.filterByType('all')">
-                                    <i class="fas fa-th"></i>
-                                    <span>Todos</span>
-                                    <span class="filter-count" id="countAll">0</span>
-                                </button>
-                                <button class="filter-btn" data-filter="physical" onclick="app.filterByType('physical')">
-                                    <i class="fas fa-box"></i>
-                                    <span>Físicos</span>
-                                    <span class="filter-count" id="countPhysical">0</span>
-                                </button>
-                                <button class="filter-btn" data-filter="digital" onclick="app.filterByType('digital')">
-                                    <i class="fas fa-download"></i>
-                                    <span>Digitales</span>
-                                    <span class="filter-count" id="countDigital">0</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="sort-group">
-                            <label class="filter-label">Ordenar por:</label>
-                            <select id="sortBy" class="sort-select" onchange="app.sortProducts(this.value)">
-                                <option value="featured">Destacados</option>
-                                <option value="price-low">Precio: Menor a Mayor</option>
-                                <option value="price-high">Precio: Mayor a Menor</option>
-                                <option value="rating">Mejor Calificación</option>
-                                <option value="newest">Más Recientes</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div id="productsGrid" class="products-grid">
-                     <!--Aqui se cargan los productos-->
-                </div>
-            </div>
-        </section>
-
-        <!-- Carrito de compras -->
-        <div id="cartModal" class="modal" role="dialog" aria-label="Carrito de compras" aria-modal="true">
-            <div class="modal-content">
-                <span class="close" aria-label="Cerrar carrito">&times;</span>
-                <div class="cart-container">
-                    <h2>Carrito de Compras</h2>
-                    <div id="cartItems" class="cart-items">
-                        <!-- El carrito se carga aqui (en teoría) -->
-                    </div>
-                    <div class="cart-total">
-                        <h3>Total: $<span id="cartTotal">0.00</span></h3>
-                        <button id="checkoutBtn" class="btn-primary">Proceder al Pago</button>
-                    </div>
-                </div>
-            </div>
+    <!-- ============================================================
+         BENEFITS
+    ============================================================ -->
+    <section class="benefits">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label">¿Por qué Zonama?</span>
+          <h2 class="section-title">Hecho para El Salvador</h2>
+          <p class="section-subtitle">Una plataforma diseñada con el salvadoreño en mente, desde los pagos hasta la logística</p>
         </div>
 
-        <!-- Wishlist Modal -->
-        <div id="wishlistModal" class="modal" role="dialog" aria-label="Lista de favoritos" aria-modal="true">
-            <div class="modal-content">
-                <span class="close" aria-label="Cerrar favoritos">&times;</span>
-                <div class="cart-container">
-                    <h2><i class="fas fa-heart"></i> Mis Favoritos</h2>
-                    <div id="wishlistItems" class="cart-items">
-                        <!-- Wishlist items will be loaded here -->
-                    </div>
-                    <div class="wishlist-empty" style="display: none; text-align: center; padding: 2rem;">
-                        <i class="fas fa-heart-broken" style="font-size: 3rem; color: var(--color-border); margin-bottom: 1rem;"></i>
-                        <p style="color: var(--color-text-muted);">No tienes productos en favoritos</p>
-                        <button class="btn-primary" onclick="app.hideModal('wishlistModal')" style="margin-top: 1rem;">Explorar Productos</button>
-                    </div>
-                </div>
-            </div>
+        <div class="benefits-grid">
+          <div class="benefit-card reveal stagger-1">
+            <i class="fas fa-shipping-fast"></i>
+            <h3>Envíos a Todo El Salvador</h3>
+            <p>Alianzas con empresas de logística para entregas rápidas y económicas en los 14 departamentos.</p>
+          </div>
+          <div class="benefit-card reveal stagger-2">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Compra 100% Segura</h3>
+            <p>Protección en cada transacción. Tu dinero está seguro hasta confirmar la entrega del producto.</p>
+          </div>
+          <div class="benefit-card reveal stagger-3">
+            <i class="fas fa-hand-holding-usd"></i>
+            <h3>Precios Justos</h3>
+            <p>Comisiones bajas para que los vendedores locales puedan crecer sin sacrificar sus márgenes.</p>
+          </div>
+          <div class="benefit-card reveal stagger-4">
+            <i class="fas fa-headset"></i>
+            <h3>Soporte Local 24/7</h3>
+            <p>Atención al cliente en español, con representantes que conocen El Salvador y sus costumbres.</p>
+          </div>
+          <div class="benefit-card reveal stagger-5">
+            <i class="fab fa-bitcoin"></i>
+            <h3>Pagos Flexibles</h3>
+            <p>Acepta tarjeta, Tigo Money, Chivo Wallet (Bitcoin) o pago contra entrega. Tú eliges cómo pagar.</p>
+          </div>
+          <div class="benefit-card reveal stagger-6">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>100% Salvadoreño</h3>
+            <p>Conecta con vendedores de tu departamento o compra en todo el país. El marketplace es tuyo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SELLER CTA BANNER
+    ============================================================ -->
+    <section class="seller-cta-banner">
+      <div class="container">
+        <div class="reveal-left">
+          <h2>¿Tienes algo que vender?</h2>
+          <p>Únete a más de 500 vendedores que ya confían en Zonama para llegar a miles de compradores en todo El Salvador. Crea tu tienda gratis en menos de 5 minutos.</p>
+        </div>
+        <div class="reveal-right">
+          <button class="btn-cta-gold btn-press" id="ctaSellerBtn" onclick="app.showModal('sellerModal')">
+            <i class="fas fa-store"></i>
+            Crear mi Tienda Gratis
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         TESTIMONIALS
+    ============================================================ -->
+    <section class="testimonials">
+      <div class="container">
+        <div class="section-header reveal">
+          <span class="section-label gold">Historias de Éxito</span>
+          <h2 class="section-title">Lo que dicen nuestros vendedores</h2>
+          <p class="section-subtitle">Personas reales de El Salvador que transformaron su negocio con Zonama</p>
         </div>
 
-        <!-- Profile Modal -->
-        <div id="profileModal" class="modal" role="dialog" aria-label="Mi perfil" aria-modal="true">
-            <div class="modal-content" style="max-width:480px">
-                <span class="close" aria-label="Cerrar">&times;</span>
-                <div class="cart-container">
-                    <h2><i class="fas fa-user-circle"></i> Mi Perfil</h2>
-
-                    <div style="display:flex;flex-direction:column;align-items:center;margin:1.5rem 0">
-                        <div id="profileAvatarWrapper" style="position:relative;width:90px;height:90px;margin-bottom:1rem">
-                            <img id="profileAvatarImg" src="" alt="Avatar"
-                                style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid var(--color-border);background:#f1f3f4">
-                            <div id="profileAvatarFallback"
-                                style="display:none;width:90px;height:90px;border-radius:50%;background:var(--brand-primary);color:#fff;font-size:2rem;font-weight:700;align-items:center;justify-content:center;border:3px solid var(--color-border)">
-                            </div>
-                        </div>
-                        <span id="profileRoleBadge" style="background:var(--brand-primary);color:#fff;padding:.2rem .8rem;border-radius:999px;font-size:.8rem;font-weight:600"></span>
-                    </div>
-
-                    <form id="profileForm" style="display:flex;flex-direction:column;gap:1rem">
-                        <div class="form-group">
-                            <label for="profileName">Nombre</label>
-                            <input type="text" id="profileName" class="form-control" placeholder="Tu nombre" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="profileEmail">Email</label>
-                            <input type="email" id="profileEmail" class="form-control" disabled style="opacity:.6;cursor:not-allowed">
-                        </div>
-                        <div class="form-group">
-                            <label for="profilePhone">Teléfono</label>
-                            <input type="text" id="profilePhone" class="form-control" placeholder="ej. 7777-1234">
-                        </div>
-                        <div class="form-group">
-                            <label for="profileAvatar">URL de foto de perfil</label>
-                            <input type="url" id="profileAvatar" class="form-control" placeholder="https://...">
-                        </div>
-                        <div class="form-group">
-                            <label>O subir foto desde tu dispositivo</label>
-                            <input type="file" id="profileAvatarFile" accept="image/*" class="form-control" style="padding:.4rem">
-                        </div>
-                        <div style="display:flex;gap:.75rem;margin-top:.5rem">
-                            <button type="submit" class="btn-primary" style="flex:1">
-                                <i class="fas fa-save"></i> Guardar cambios
-                            </button>
-                            <button type="button" class="btn-secondary" onclick="app.logout(); app.hideModal('profileModal')" style="flex:1">
-                                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
-                            </button>
-                        </div>
-                    </form>
-                </div>
+        <div class="testimonials-grid">
+          <div class="testimonial-card reveal stagger-1">
+            <div class="testimonial-stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
             </div>
+            <div class="testimonial-quote">"</div>
+            <p>Zonama me ayudó a llevar mi negocio de artesanías al siguiente nivel. Ahora vendo en todo San Salvador y hasta recibo pedidos desde La Libertad.</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">MG</div>
+              <div class="testimonial-author-info">
+                <strong>María González</strong>
+                <span>Artesanías María — San Salvador</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card reveal stagger-2">
+            <div class="testimonial-stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <div class="testimonial-quote">"</div>
+            <p>Como artesano de Ilobasco, Zonama me conectó con clientes que valoran el trabajo hecho a mano. Mis ventas aumentaron un 300% en el primer año.</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">CM</div>
+              <div class="testimonial-author-info">
+                <strong>Carlos Martínez</strong>
+                <span>Artesanías El Barro — Cabañas</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="testimonial-card reveal stagger-3">
+            <div class="testimonial-stars">
+              <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <div class="testimonial-quote">"</div>
+            <p>Tenía miedo de vender en línea, pero Zonama lo hace muy fácil. El soporte en español fue clave. Ahora tengo más de 50 productos en mi tienda.</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">AL</div>
+              <div class="testimonial-author-info">
+                <strong>Ana Leticia Ramos</strong>
+                <span>Ropa Leticia Moda — Santa Ana</span>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+    </section>
 
-        <!-- Orders Modal -->
-        <div id="ordersModal" class="modal" role="dialog" aria-label="Mis órdenes" aria-modal="true">
-            <div class="modal-content" style="max-width:700px">
-                <span class="close" aria-label="Cerrar">&times;</span>
-                <div class="cart-container">
-                    <h2><i class="fas fa-box"></i> Mis Órdenes</h2>
-                    <div id="ordersList"></div>
-                </div>
-            </div>
+    <!-- ============================================================
+         ALL MODALS (HTML preserved, restyled via CSS)
+    ============================================================ -->
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal" role="dialog" aria-label="Iniciar sesión o registrarse" aria-modal="true">
+      <div class="modal-content">
+        <span class="close" aria-label="Cerrar formulario">&times;</span>
+        <div class="auth-container">
+          <div class="auth-tabs">
+            <button class="tab-btn active" data-tab="login">Iniciar Sesión</button>
+            <button class="tab-btn" data-tab="register">Crear Cuenta</button>
+          </div>
+          <div id="loginForm" class="auth-form active">
+            <h2>Bienvenido de vuelta</h2>
+            <form>
+              <input type="email" placeholder="Email" required>
+              <input type="password" placeholder="Contraseña" required>
+              <button type="submit" class="btn-primary">Iniciar Sesión</button>
+            </form>
+          </div>
+          <div id="registerForm" class="auth-form">
+            <h2>Crear Cuenta</h2>
+            <form>
+              <input type="text" placeholder="Nombre completo" required>
+              <input type="email" placeholder="Email" required>
+              <input type="tel" placeholder="Teléfono (opcional)">
+              <select required>
+                <option value="">Departamento</option>
+                <option value="san-salvador">San Salvador</option>
+                <option value="la-libertad">La Libertad</option>
+                <option value="santa-ana">Santa Ana</option>
+                <option value="san-miguel">San Miguel</option>
+                <option value="usulutan">Usulután</option>
+                <option value="la-paz">La Paz</option>
+                <option value="sonsonate">Sonsonate</option>
+                <option value="chalatenango">Chalatenango</option>
+                <option value="la-union">La Unión</option>
+                <option value="ahuachapan">Ahuachapán</option>
+                <option value="cabanas">Cabañas</option>
+                <option value="cuscatlan">Cuscatlán</option>
+                <option value="morazan">Morazán</option>
+                <option value="san-vicente">San Vicente</option>
+              </select>
+              <input type="password" placeholder="Contraseña" required>
+              <input type="password" placeholder="Confirmar contraseña" required>
+              <button type="submit" class="btn-primary">Crear Cuenta</button>
+            </form>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Image Lightbox Modal -->
-        <div id="imageLightbox" class="modal lightbox-modal" role="dialog" aria-label="Vista ampliada de imagen" aria-modal="true">
-            <div class="modal-content lightbox-content">
-                <span class="close" aria-label="Cerrar vista ampliada">&times;</span>
-                <img id="lightboxImage" src="" alt="" tabindex="0">
-                <div class="lightbox-caption" id="lightboxCaption"></div>
+    <!-- Seller Info Modal -->
+    <div id="sellerModal" class="modal" role="dialog" aria-label="Vender en Zonama" aria-modal="true">
+      <div class="modal-content seller-modal">
+        <span class="close" aria-label="Cerrar">&times;</span>
+        <div class="seller-container">
+          <div class="seller-hero">
+            <h1>Vende en Zonama</h1>
+            <p class="seller-tagline">El marketplace que conecta a vendedores salvadoreños con miles de compradores</p>
+            <div class="seller-stats">
+              <div class="stat-item">
+                <strong>500+</strong>
+                <span>Vendedores activos</span>
+              </div>
+              <div class="stat-item">
+                <strong>10,000+</strong>
+                <span>Compradores mensuales</span>
+              </div>
+              <div class="stat-item">
+                <strong>$50K+</strong>
+                <span>Ventas mensuales</span>
+              </div>
             </div>
+          </div>
+
+          <div class="why-sell-section">
+            <h2>¿Por qué vender en Zonama?</h2>
+            <div class="why-sell-grid">
+              <div class="why-sell-card">
+                <div class="icon-circle"><i class="fas fa-store"></i></div>
+                <div>
+                  <h3>Fácil de empezar</h3>
+                  <p>Crea tu tienda en minutos. Sin costos iniciales ni complicaciones técnicas.</p>
+                </div>
+              </div>
+              <div class="why-sell-card">
+                <div class="icon-circle"><i class="fas fa-users"></i></div>
+                <div>
+                  <h3>Audiencia local</h3>
+                  <p>Accede a miles de compradores salvadoreños buscando productos como los tuyos.</p>
+                </div>
+              </div>
+              <div class="why-sell-card">
+                <div class="icon-circle"><i class="fas fa-truck"></i></div>
+                <div>
+                  <h3>Logística integrada</h3>
+                  <p>Alianzas con empresas de envío para entregas rápidas en todo El Salvador.</p>
+                </div>
+              </div>
+              <div class="why-sell-card">
+                <div class="icon-circle"><i class="fas fa-dollar-sign"></i></div>
+                <div>
+                  <h3>Pagos seguros</h3>
+                  <p>Recibe tus pagos de forma segura y rápida. Múltiples métodos de pago disponibles.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="plans-section">
+            <h2>Elige el plan perfecto para tu negocio</h2>
+            <p class="plans-subtitle">Comienza gratis y crece a tu ritmo</p>
+            <div class="seller-plans">
+              <div class="plan-card">
+                <div class="plan-header">
+                  <h3>Plan Básico</h3>
+                  <div class="plan-price">
+                    <span class="price-amount">$0</span>
+                    <span class="price-period">/mes</span>
+                  </div>
+                  <p class="plan-description">Perfecto para empezar</p>
+                </div>
+                <ul class="plan-features">
+                  <li><i class="fas fa-check-circle"></i> Hasta 10 productos</li>
+                  <li><i class="fas fa-check-circle"></i> Comisión del 8% por venta</li>
+                  <li><i class="fas fa-check-circle"></i> Soporte por email</li>
+                  <li><i class="fas fa-check-circle"></i> Panel de ventas básico</li>
+                  <li><i class="fas fa-check-circle"></i> Listado en búsquedas</li>
+                </ul>
+                <button class="btn-plan btn-plan-basic">Comenzar Gratis</button>
+              </div>
+              <div class="plan-card plan-featured">
+                <div class="plan-badge">Más Popular</div>
+                <div class="plan-header">
+                  <h3>Plan Profesional</h3>
+                  <div class="plan-price">
+                    <span class="price-amount">$15</span>
+                    <span class="price-period">/mes</span>
+                  </div>
+                  <p class="plan-description">Para negocios en crecimiento</p>
+                </div>
+                <ul class="plan-features">
+                  <li><i class="fas fa-check-circle"></i> Productos ilimitados</li>
+                  <li><i class="fas fa-check-circle"></i> Comisión del 5% por venta</li>
+                  <li><i class="fas fa-check-circle"></i> Soporte prioritario 24/7</li>
+                  <li><i class="fas fa-check-circle"></i> Análisis y reportes avanzados</li>
+                  <li><i class="fas fa-check-circle"></i> Destacado en búsquedas</li>
+                  <li><i class="fas fa-check-circle"></i> Promociones especiales</li>
+                  <li><i class="fas fa-check-circle"></i> Badge de vendedor verificado</li>
+                </ul>
+                <button class="btn-plan btn-plan-pro">Elegir Plan Profesional</button>
+              </div>
+              <div class="plan-card">
+                <div class="plan-header">
+                  <h3>Plan Empresarial</h3>
+                  <div class="plan-price">
+                    <span class="price-amount">$40</span>
+                    <span class="price-period">/mes</span>
+                  </div>
+                  <p class="plan-description">Para grandes volúmenes</p>
+                </div>
+                <ul class="plan-features">
+                  <li><i class="fas fa-check-circle"></i> Todo del Plan Profesional</li>
+                  <li><i class="fas fa-check-circle"></i> Comisión del 3% por venta</li>
+                  <li><i class="fas fa-check-circle"></i> Gerente de cuenta dedicado</li>
+                  <li><i class="fas fa-check-circle"></i> Publicidad destacada</li>
+                  <li><i class="fas fa-check-circle"></i> API personalizada</li>
+                  <li><i class="fas fa-check-circle"></i> Reportes personalizados</li>
+                  <li><i class="fas fa-check-circle"></i> Integración con tu sistema</li>
+                </ul>
+                <button class="btn-plan btn-plan-enterprise">Contactar Ventas</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="success-section">
+            <h2>Historias de éxito</h2>
+            <div class="success-grid">
+              <div class="success-card">
+                <div class="quote-icon">"</div>
+                <p>"Zonama me ayudó a llevar mi negocio de artesanías al siguiente nivel. Ahora vendo en todo San Salvador."</p>
+                <div class="success-author">
+                  <strong>María González</strong>
+                  <span>Artesanías María</span>
+                </div>
+              </div>
+              <div class="success-card">
+                <div class="quote-icon">"</div>
+                <p>"Como artesano de Ilobasco, Zonama me conectó con clientes que valoran el trabajo hecho a mano."</p>
+                <div class="success-author">
+                  <strong>Carlos Martínez</strong>
+                  <span>Artesanías El Barro</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="seller-cta">
+            <h2>¿Listo para empezar a vender?</h2>
+            <p>Únete a cientos de vendedores salvadoreños que ya confían en Zonama</p>
+            <button class="btn-cta-large" onclick="app.openSellerRegistration()">Crear mi tienda gratis</button>
+            <p class="cta-note">Sin tarjeta de crédito requerida • Configuración en 5 minutos</p>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <!-- MOdulo de detalles del producto -->
-        <div id="productModal" class="modal" role="dialog" aria-label="Detalles del producto" aria-modal="true">
-            <div class="modal-content product-detail-modal">
-                <span class="close" aria-label="Cerrar detalles del producto">&times;</span>
-                <div class="product-detail-container">
-                    <!-- Imagen (Columna izquiera) -->
-                    <div class="product-detail-left">
-                        <div class="product-image-main">
-                            <img id="productDetailImage" src="" alt="" role="button" tabindex="0" aria-label="Haz clic para ver imagen completa">
-                            <div class="zoom-hint">
-                                <i class="fas fa-search-plus"></i> Click para ampliar
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Info (Columna central) -->
-                    <div class="product-detail-middle">
-                        <h1 id="productDetailTitle" class="product-title-main"></h1>
-                        
-                        <div class="product-brand-line">
-                            <span class="brand-label">Marca:</span>
-                            <span id="productDetailAuthor" class="brand-name"></span>
-                        </div>
-
-                        <div class="product-rating-line">
-                            <div class="stars-large" id="productDetailStars"></div>
-                            <span id="productDetailRating" class="rating-text"></span>
-                            <span class="rating-count">(Ver opiniones)</span>
-                        </div>
-
-                        <div class="divider"></div>
-
-                        <div class="product-price-box">
-                            <div class="price-label">Precio:</div>
-                            <div id="productDetailPrice" class="price-main"></div>
-                            <div id="priceShippingInfo" class="price-shipping">Envío GRATIS en pedidos mayores a $25</div>
-                        </div>
-
-                        <div class="divider"></div>
-
-                        <div class="product-about">
-                            <h3>Acerca de este producto</h3>
-                            <p id="productDetailDescription" class="product-description-text"></p>
-                        </div>
-
-                        <div class="product-specs">
-                            <h3>Especificaciones del producto</h3>
-                            <table class="specs-table">
-                                <tr>
-                                    <td class="spec-label">Especificaciones</td>
-                                    <td id="productDetailPages" class="spec-value"></td>
-                                </tr>
-                                <tr>
-                                    <td class="spec-label">Marca/Editorial</td>
-                                    <td id="productDetailPublisher" class="spec-value"></td>
-                                </tr>
-                                <tr>
-                                    <td class="spec-label">Categoría</td>
-                                    <td id="productDetailGenre" class="spec-value"></td>
-                                </tr>
-                                <tr>
-                                    <td class="spec-label">Vendedor</td>
-                                    <td id="productDetailISBN" class="spec-value"></td>
-                                </tr>
-                                <tr>
-                                    <td class="spec-label">Tipo</td>
-                                    <td id="productDetailType" class="spec-value"></td>
-                                </tr>
-                                <tr>
-                                    <td class="spec-label">Ubicación</td>
-                                    <td id="productDetailLocation" class="spec-value"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Sección comprar (columna derecha) -->
-                    <div class="product-detail-right">
-                        <div class="buy-box">
-                            <div id="productDetailPriceBox" class="buy-box-price"></div>
-                            
-                            <div class="stock-status" id="stockStatus">
-                                <i class="fas fa-check-circle"></i> En stock
-                            </div>
-
-                            <div id="deliveryInfo" class="delivery-info">
-                                <div class="delivery-line">
-                                    <i class="fas fa-truck"></i>
-                                    <div>
-                                        <strong>Envío GRATIS</strong>
-                                        <div class="delivery-date">Llega el <strong>Lunes, 18 Nov</strong></div>
-                                    </div>
-                                </div>
-                                <div class="delivery-line">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                    <div>
-                                        <span>Enviar a</span>
-                                        <strong id="deliveryLocation">San Salvador</strong>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div id="digitalDeliveryInfo" class="delivery-info" style="display: none;">
-                                <div class="delivery-line">
-                                    <i class="fas fa-download"></i>
-                                    <div>
-                                        <strong>Entrega Digital Inmediata</strong>
-                                        <div class="delivery-date">Disponible después del pago</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="quantity-selector">
-                                <label for="quantity">Cantidad:</label>
-                                <select id="quantity" class="quantity-select">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10+</option>
-                                </select>
-                            </div>
-
-                            <button id="productDetailAddToCart" class="btn-add-to-cart">
-                                <i class="fas fa-shopping-cart"></i> Agregar al carrito
-                            </button>
-
-                            <button class="btn-buy-now">
-                                <i class="fas fa-bolt"></i> Comprar ahora
-                            </button>
-
-                            <div class="secure-transaction">
-                                <i class="fas fa-lock"></i> Transacción segura
-                            </div>
-
-                            <div class="seller-info">
-                                <div class="seller-line">
-                                    <span>Vendido por:</span>
-                                    <strong id="sellerName">Zonama</strong>
-                                </div>
-                                <div id="shipFromLine" class="seller-line">
-                                    <span>Envío desde:</span>
-                                    <strong id="shipFrom">El Salvador</strong>
-                                </div>
-                            </div>
-
-                            <div id="returnPolicy" class="return-policy">
-                                <i class="fas fa-undo"></i> Devoluciones gratuitas en 30 días
-                            </div>
-                            
-                            <div id="digitalPolicy" class="return-policy" style="display: none;">
-                                <i class="fas fa-shield-alt"></i> Compra protegida - Acceso inmediato
-                            </div>
-                        </div>
-                    </div>
+    <!-- Seller Registration Modal -->
+    <div id="sellerRegistrationModal" class="modal" role="dialog" aria-label="Registro de vendedor" aria-modal="true">
+      <div class="modal-content seller-registration-modal">
+        <span class="close" aria-label="Cerrar">&times;</span>
+        <div class="registration-container">
+          <h2>Crea tu tienda en Zonama</h2>
+          <p class="registration-subtitle">Completa tu información para empezar a vender</p>
+          <form id="sellerRegistrationForm" class="seller-form">
+            <div class="form-section">
+              <h3>Información Personal</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="sellerName">Nombre completo *</label>
+                  <input type="text" id="sellerName" required>
                 </div>
+                <div class="form-group">
+                  <label for="sellerEmail">Email *</label>
+                  <input type="email" id="sellerEmail" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="sellerPhone">Teléfono *</label>
+                  <input type="tel" id="sellerPhone" required>
+                </div>
+                <div class="form-group">
+                  <label for="sellerPassword">Contraseña *</label>
+                  <input type="password" id="sellerPassword" required>
+                </div>
+              </div>
             </div>
+            <div class="form-section">
+              <h3>Información del Negocio</h3>
+              <div class="form-group">
+                <label for="storeName">Nombre de tu tienda *</label>
+                <input type="text" id="storeName" required placeholder="Ej: Tienda de Coleccionables">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="storeCategory">Categoría principal *</label>
+                  <select id="storeCategory" required>
+                    <option value="">Selecciona una categoría</option>
+                    <option value="food">Comida Local</option>
+                    <option value="crafts">Artesanías</option>
+                    <option value="clothing">Ropa</option>
+                    <option value="electronics">Electrónicos</option>
+                    <option value="home">Hogar</option>
+                    <option value="books">Libros</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="storeDepartment">Departamento *</label>
+                  <select id="storeDepartment" required>
+                    <option value="">Selecciona un departamento</option>
+                    <option value="san-salvador">San Salvador</option>
+                    <option value="la-libertad">La Libertad</option>
+                    <option value="santa-ana">Santa Ana</option>
+                    <option value="san-miguel">San Miguel</option>
+                    <option value="usulutan">Usulután</option>
+                    <option value="la-paz">La Paz</option>
+                    <option value="sonsonate">Sonsonate</option>
+                    <option value="chalatenango">Chalatenango</option>
+                    <option value="la-union">La Unión</option>
+                    <option value="ahuachapan">Ahuachapán</option>
+                    <option value="cabanas">Cabañas</option>
+                    <option value="cuscatlan">Cuscatlán</option>
+                    <option value="morazan">Morazán</option>
+                    <option value="san-vicente">San Vicente</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="storeDescription">Descripción de tu negocio *</label>
+                <textarea id="storeDescription" rows="3" required placeholder="Cuéntanos sobre tu negocio..."></textarea>
+              </div>
+            </div>
+            <div class="form-section">
+              <h3>Plan de Vendedor</h3>
+              <div class="plan-selector">
+                <label class="plan-option">
+                  <input type="radio" name="sellerPlan" value="basic" checked>
+                  <div class="plan-option-content">
+                    <strong>Plan Básico — Gratis</strong>
+                    <span>Hasta 10 productos • Comisión 8%</span>
+                  </div>
+                </label>
+                <label class="plan-option">
+                  <input type="radio" name="sellerPlan" value="professional">
+                  <div class="plan-option-content">
+                    <strong>Plan Profesional — $15/mes</strong>
+                    <span>Productos ilimitados • Comisión 5%</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn-submit-seller">Crear mi tienda</button>
+              <p class="form-note">Al registrarte, aceptas nuestros <a href="#">Términos y Condiciones</a></p>
+            </div>
+          </form>
         </div>
+      </div>
+    </div>
 
-        <!-- Modulo Checkout -->
-        <div id="checkoutModal" class="modal" role="dialog" aria-label="Proceso de pago" aria-modal="true">
-            <div class="modal-content">
-                <span class="close" aria-label="Cerrar proceso de pago">&times;</span>
-                <div class="checkout-container">
-                    <h2>Finalizar Compra</h2>
-                    <div class="checkout-steps">
-                        <div class="step active" data-step="1">
-                            <h3>1. Dirección de Entrega</h3>
-                            <form id="addressForm">
-                                <div class="form-group">
-                                    <label for="checkoutPhone">Teléfono de contacto *</label>
-                                    <input 
-                                        type="tel" 
-                                        id="checkoutPhone" 
-                                        placeholder="Ej: 7777-7777" 
-                                        required
-                                    >
-                                </div>
-
-                                <div class="form-group">
-                                    <label>Ubicación en el mapa *</label>
-                                    <p class="help-text">
-                                        Mueve el mapa o el marcador para seleccionar tu dirección de entrega.
-                                    </p>
-
-                                    <!-- Aquí se dibuja el mapa -->
-                                    <div 
-                                        id="checkoutMap" 
-                                        style="
-                                            height: 300px; 
-                                            border-radius: 8px; 
-                                            overflow: hidden; 
-                                            margin-bottom: 10px;
-                                        "
-                                    ></div>
-
-                                    <!-- Datos que va a rellenar el javscript -->
-                                    <input type="hidden" id="checkoutLat">
-                                    <input type="hidden" id="checkoutLng">
-                                    <input type="hidden" id="checkoutAddress">
-                                </div>
-
-                                <button type="button" class="btn-primary next-step">
-                                    Continuar
-                                </button>
-                            </form>
-
-                        </div>
-
-                        <div class="step" data-step="2">
-                            <h3>2. Método de Pago</h3>
-                            <div class="payment-methods">
-                                <label>
-                                    <input type="radio" name="payment" value="card" checked>
-                                    <i class="fas fa-credit-card"></i> Tarjeta de Crédito/Débito
-                                </label>
-                                <label>
-                                    <input type="radio" name="payment" value="tigo-money">
-                                    <i class="fas fa-mobile-alt"></i> Tigo Money
-                                </label>
-                                <label>
-                                    <input type="radio" name="payment" value="chivo-wallet">
-                                    <i class="fab fa-bitcoin"></i> Chivo Wallet (Bitcoin)
-                                </label>
-                                <label>
-                                    <input type="radio" name="payment" value="cash">
-                                    <i class="fas fa-money-bill-wave"></i> Pago Contra Entrega
-                                </label>
-                            </div>
-                            <div id="cardForm" class="payment-form">
-                                <input type="text" placeholder="Número de tarjeta" required>
-                                <input type="text" placeholder="MM/AA" required>
-                                <input type="text" placeholder="CVV" required>
-                            </div>
-                            <button type="button" class="btn-primary" id="processPayment">Procesar Pago</button>
-                        </div>
-
-                        <div class="step" data-step="3">
-                            <h3>3. Confirmación</h3>
-                            <div id="orderConfirmation">
-                                <!-- Order confirmation will be shown here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Seller Dashboard Modal -->
+    <div id="sellerDashboardModal" class="modal" role="dialog" aria-label="Panel de vendedor" aria-modal="true">
+      <div class="modal-content seller-dashboard-modal">
+        <span class="close" aria-label="Cerrar">&times;</span>
+        <div class="dashboard-container">
+          <div class="dashboard-header">
+            <h1>Mi Tienda</h1>
+            <div class="dashboard-actions">
+              <button class="btn-add-product" onclick="app.openAddProduct()">
+                <i class="fas fa-plus"></i> Agregar Producto
+              </button>
+              <button class="btn-logout" onclick="app.logoutSeller()">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+              </button>
             </div>
+          </div>
+          <div class="dashboard-stats">
+            <div class="stat-card">
+              <i class="fas fa-box"></i>
+              <div>
+                <strong id="totalProducts">0</strong>
+                <span>Productos</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-shopping-cart"></i>
+              <div>
+                <strong id="totalSales">0</strong>
+                <span>Ventas</span>
+              </div>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-dollar-sign"></i>
+              <div>
+                <strong id="totalRevenue">$0</strong>
+                <span>Ingresos</span>
+              </div>
+            </div>
+          </div>
+          <div class="dashboard-content">
+            <h2>Mis Productos</h2>
+            <div id="sellerProductsList" class="seller-products-list">
+              <div class="empty-state">
+                <i class="fas fa-box-open"></i>
+                <p>Aún no tienes productos</p>
+                <button class="btn-add-first" onclick="app.openAddProduct()">Agregar mi primer producto</button>
+              </div>
+            </div>
+          </div>
         </div>
-    </main>
+      </div>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3><i class="fas fa-gem"></i> Zonama</h3>
-                    <p>El marketplace que conecta a El Salvador</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="modal" role="dialog" aria-label="Agregar producto" aria-modal="true">
+      <div class="modal-content add-product-modal">
+        <span class="close" aria-label="Cerrar">&times;</span>
+        <div class="add-product-container">
+          <h2>Agregar Nuevo Producto</h2>
+          <form id="addProductForm" class="product-form">
+            <div class="form-group">
+              <label for="productTitle">Nombre del producto *</label>
+              <input type="text" id="productTitle" required placeholder="Ej: Figura Coleccionable Anime">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="productPrice">Precio (USD) *</label>
+                <input type="number" id="productPrice" step="0.01" min="0" required placeholder="0.00">
+              </div>
+              <div class="form-group">
+                <label for="productCategory">Categoría *</label>
+                <select id="productCategory" required>
+                  <option value="">Selecciona una categoría</option>
+                  <option value="food">Comida Local</option>
+                  <option value="crafts">Artesanías</option>
+                  <option value="clothing">Ropa</option>
+                  <option value="electronics">Electrónicos</option>
+                  <option value="home">Hogar</option>
+                  <option value="books">Libros</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="productType">Tipo *</label>
+                <select id="productType" required>
+                  <option value="physical">Producto Físico</option>
+                  <option value="digital">Producto Digital</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="productStock">Stock disponible *</label>
+                <input type="number" id="productStock" min="0" required placeholder="0">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="productDescription">Descripción *</label>
+              <textarea id="productDescription" rows="4" required placeholder="Describe tu producto..."></textarea>
+            </div>
+            <div class="form-group">
+              <label>Imagen del producto</label>
+              <div class="upload-tabs">
+                <button type="button" class="upload-tab-btn active" onclick="app.switchUploadTab('file')">
+                  <i class="fas fa-upload"></i> Subir archivo
+                </button>
+                <button type="button" class="upload-tab-btn" onclick="app.switchUploadTab('url')">
+                  <i class="fas fa-link"></i> URL de imagen
+                </button>
+              </div>
+              <div class="upload-content">
+                <div id="fileUploadTab" class="upload-tab-content active">
+                  <div class="file-upload-area" id="fileUploadArea">
+                    <input type="file" id="productImageFile" accept="image/*" style="display:none;">
+                    <div class="upload-placeholder" onclick="document.getElementById('productImageFile').click()">
+                      <i class="fas fa-cloud-upload-alt"></i>
+                      <p>Haz clic para seleccionar una imagen</p>
+                      <small>o arrastra y suelta aquí</small>
+                      <small class="file-info">JPG, PNG, GIF (máx. 5MB)</small>
                     </div>
+                    <div id="imagePreview" class="image-preview" style="display:none;">
+                      <img id="previewImg" src="" alt="Vista previa">
+                      <button type="button" class="btn-remove-image" onclick="app.removeImage()">
+                        <i class="fas fa-times"></i> Cambiar imagen
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <div class="footer-section">
-                    <h4>Para Compradores</h4>
-                    <ul>
-                        <li><a href="#">Cómo comprar</a></li>
-                        <li><a href="#">Métodos de pago</a></li>
-                        <li><a href="#">Envíos y entregas</a></li>
-                        <li><a href="#">Devoluciones</a></li>
-                    </ul>
+                <div id="urlUploadTab" class="upload-tab-content">
+                  <input type="url" id="productImageUrl" placeholder="https://ejemplo.com/imagen.jpg">
+                  <small style="font-size:0.78rem;color:var(--text-3);margin:4px 0 8px;display:block;">Ingresa la URL de una imagen de tu producto</small>
+                  <button type="button" class="btn-preview-url" onclick="app.previewUrlImage()">
+                    <i class="fas fa-eye"></i> Vista previa
+                  </button>
+                  <div id="urlImagePreview" class="image-preview" style="display:none;">
+                    <img id="urlPreviewImg" src="" alt="Vista previa">
+                  </div>
                 </div>
-                <div class="footer-section">
-                    <h4>Para Vendedores</h4>
-                    <ul>
-                        <li><a href="#" id="footerSellerLink">Vender en Zonama</a></li>
-                        <li><a href="#">Planes y precios</a></li>
-                        <li><a href="#">Centro de vendedores</a></li>
-                        <li><a href="#">Recursos</a></li>
-                    </ul>
-                </div>
-                <div class="footer-section">
-                    <h4>Ayuda</h4>
-                    <ul>
-                        <li><a href="#">Centro de ayuda</a></li>
-                        <li><a href="#">Contacto</a></li>
-                        <li><a href="#">Términos y condiciones</a></li>
-                        <li><a href="#">Política de privacidad</a></li>
-                    </ul>
-                </div>
+              </div>
             </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 Zonama. Todos los derechos reservados. Hecho con <i class="fas fa-heart"></i> en El Salvador</p>
+            <div class="form-group">
+              <label for="productSpecs">Especificaciones (opcional)</label>
+              <input type="text" id="productSpecs" placeholder="Ej: 100% algodón, Hecho a mano">
             </div>
+            <div class="form-actions" style="flex-direction:row;">
+              <button type="button" class="btn-cancel" onclick="app.closeAddProduct()">Cancelar</button>
+              <button type="submit" class="btn-submit-product">Publicar Producto</button>
+            </div>
+          </form>
         </div>
-    </footer>
+      </div>
+    </div>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="Js/script.js"></script>
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal" role="dialog" aria-label="Carrito de compras" aria-modal="true">
+      <div class="modal-content">
+        <span class="close" aria-label="Cerrar carrito">&times;</span>
+        <div class="cart-container">
+          <h2><i class="fas fa-shopping-cart"></i> Carrito de Compras</h2>
+          <div id="cartItems" class="cart-items"></div>
+          <div class="cart-total">
+            <h3>Total: $<span id="cartTotal">0.00</span></h3>
+            <button id="checkoutBtn" class="btn-primary">Proceder al Pago</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wishlist Modal -->
+    <div id="wishlistModal" class="modal" role="dialog" aria-label="Lista de favoritos" aria-modal="true">
+      <div class="modal-content">
+        <span class="close" aria-label="Cerrar favoritos">&times;</span>
+        <div class="cart-container">
+          <h2><i class="fas fa-heart"></i> Mis Favoritos</h2>
+          <div id="wishlistItems" class="cart-items"></div>
+          <div class="wishlist-empty" style="display:none; text-align:center; padding:2rem;">
+            <i class="fas fa-heart-broken" style="font-size:3rem; color:var(--border-strong); margin-bottom:1rem;"></i>
+            <p style="color:var(--text-3);">No tienes productos en favoritos</p>
+            <button class="btn-primary" onclick="app.hideModal('wishlistModal')" style="margin-top:1rem;">Explorar Productos</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal" role="dialog" aria-label="Mi perfil" aria-modal="true">
+      <div class="modal-content" style="max-width:480px">
+        <span class="close" aria-label="Cerrar">&times;</span>
+        <div class="cart-container">
+          <h2><i class="fas fa-user-circle"></i> Mi Perfil</h2>
+          <div style="display:flex;flex-direction:column;align-items:center;margin:1.5rem 0">
+            <div id="profileAvatarWrapper" style="position:relative;width:90px;height:90px;margin-bottom:1rem">
+              <img id="profileAvatarImg" src="" alt="Avatar"
+                   style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid var(--border-strong);background:var(--bg-2)">
+              <div id="profileAvatarFallback"
+                   style="display:none;width:90px;height:90px;border-radius:50%;background:var(--brand);color:#fff;font-size:2rem;font-weight:700;align-items:center;justify-content:center;border:3px solid var(--border-strong)">
+              </div>
+            </div>
+            <span id="profileRoleBadge" style="background:var(--brand);color:#fff;padding:.2rem .8rem;border-radius:999px;font-size:.8rem;font-weight:600"></span>
+          </div>
+          <form id="profileForm" style="display:flex;flex-direction:column;gap:1rem">
+            <div class="form-group">
+              <label for="profileName">Nombre</label>
+              <input type="text" id="profileName" class="form-control" placeholder="Tu nombre" required>
+            </div>
+            <div class="form-group">
+              <label for="profileEmail">Email</label>
+              <input type="email" id="profileEmail" class="form-control" disabled style="opacity:.6;cursor:not-allowed">
+            </div>
+            <div class="form-group">
+              <label for="profilePhone">Teléfono</label>
+              <input type="text" id="profilePhone" class="form-control" placeholder="ej. 7777-1234">
+            </div>
+            <div class="form-group">
+              <label for="profileAvatar">URL de foto de perfil</label>
+              <input type="url" id="profileAvatar" class="form-control" placeholder="https://...">
+            </div>
+            <div class="form-group">
+              <label>O subir foto desde tu dispositivo</label>
+              <input type="file" id="profileAvatarFile" accept="image/*" class="form-control" style="padding:.4rem">
+            </div>
+            <div style="display:flex;gap:.75rem;margin-top:.5rem">
+              <button type="submit" class="btn-primary" style="flex:1">
+                <i class="fas fa-save"></i> Guardar cambios
+              </button>
+              <button type="button" class="btn-secondary" onclick="app.logout(); app.hideModal('profileModal')" style="flex:1">
+                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Modal -->
+    <div id="ordersModal" class="modal" role="dialog" aria-label="Mis órdenes" aria-modal="true">
+      <div class="modal-content" style="max-width:700px">
+        <span class="close" aria-label="Cerrar">&times;</span>
+        <div class="cart-container">
+          <h2><i class="fas fa-box"></i> Mis Órdenes</h2>
+          <div id="ordersList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Lightbox -->
+    <div id="imageLightbox" class="modal lightbox-modal" role="dialog" aria-label="Vista ampliada" aria-modal="true">
+      <div class="modal-content lightbox-content">
+        <span class="close" aria-label="Cerrar">&times;</span>
+        <img id="lightboxImage" src="" alt="" tabindex="0">
+        <div class="lightbox-caption" id="lightboxCaption"></div>
+      </div>
+    </div>
+
+    <!-- Product Detail Modal -->
+    <div id="productModal" class="modal" role="dialog" aria-label="Detalles del producto" aria-modal="true">
+      <div class="modal-content product-detail-modal">
+        <span class="close" aria-label="Cerrar detalles del producto">&times;</span>
+        <div class="product-detail-container">
+          <div class="product-detail-left">
+            <div class="product-image-main">
+              <img id="productDetailImage" src="" alt="" role="button" tabindex="0" aria-label="Haz clic para ver imagen completa">
+              <div class="zoom-hint"><i class="fas fa-search-plus"></i> Click para ampliar</div>
+            </div>
+          </div>
+          <div class="product-detail-middle">
+            <h1 id="productDetailTitle" class="product-title-main"></h1>
+            <div class="product-brand-line">
+              <span class="brand-label">Marca:</span>
+              <span id="productDetailAuthor" class="brand-name"></span>
+            </div>
+            <div class="product-rating-line">
+              <div class="stars-large" id="productDetailStars"></div>
+              <span id="productDetailRating" class="rating-text"></span>
+              <span class="rating-count">(Ver opiniones)</span>
+            </div>
+            <div class="divider"></div>
+            <div class="product-price-box">
+              <div class="price-label">Precio:</div>
+              <div id="productDetailPrice" class="price-main"></div>
+              <div id="priceShippingInfo" class="price-shipping">Envío GRATIS en pedidos mayores a $25</div>
+            </div>
+            <div class="divider"></div>
+            <div class="product-about">
+              <h3>Acerca de este producto</h3>
+              <p id="productDetailDescription" class="product-description-text"></p>
+            </div>
+            <div class="product-specs">
+              <h3>Especificaciones</h3>
+              <table class="specs-table">
+                <tr><td class="spec-label">Especificaciones</td><td id="productDetailPages" class="spec-value"></td></tr>
+                <tr><td class="spec-label">Marca/Editorial</td><td id="productDetailPublisher" class="spec-value"></td></tr>
+                <tr><td class="spec-label">Categoría</td><td id="productDetailGenre" class="spec-value"></td></tr>
+                <tr><td class="spec-label">Vendedor</td><td id="productDetailISBN" class="spec-value"></td></tr>
+                <tr><td class="spec-label">Tipo</td><td id="productDetailType" class="spec-value"></td></tr>
+                <tr><td class="spec-label">Ubicación</td><td id="productDetailLocation" class="spec-value"></td></tr>
+              </table>
+            </div>
+          </div>
+          <div class="product-detail-right">
+            <div class="buy-box">
+              <div id="productDetailPriceBox" class="buy-box-price"></div>
+              <div class="stock-status" id="stockStatus"><i class="fas fa-check-circle"></i> En stock</div>
+              <div id="deliveryInfo" class="delivery-info">
+                <div class="delivery-line">
+                  <i class="fas fa-truck"></i>
+                  <div>
+                    <strong>Envío GRATIS</strong>
+                    <div class="delivery-date">Llega el <strong>Lunes, 18 Nov</strong></div>
+                  </div>
+                </div>
+                <div class="delivery-line">
+                  <i class="fas fa-map-marker-alt"></i>
+                  <div>
+                    <span>Enviar a</span>
+                    <strong id="deliveryLocation">San Salvador</strong>
+                  </div>
+                </div>
+              </div>
+              <div id="digitalDeliveryInfo" class="delivery-info" style="display:none;">
+                <div class="delivery-line">
+                  <i class="fas fa-download"></i>
+                  <div>
+                    <strong>Entrega Digital Inmediata</strong>
+                    <div class="delivery-date">Disponible después del pago</div>
+                  </div>
+                </div>
+              </div>
+              <div class="quantity-selector">
+                <label for="quantity">Cantidad:</label>
+                <select id="quantity" class="quantity-select">
+                  <option value="1">1</option><option value="2">2</option>
+                  <option value="3">3</option><option value="4">4</option>
+                  <option value="5">5</option><option value="6">6</option>
+                  <option value="7">7</option><option value="8">8</option>
+                  <option value="9">9</option><option value="10">10+</option>
+                </select>
+              </div>
+              <button id="productDetailAddToCart" class="btn-add-to-cart">
+                <i class="fas fa-shopping-cart"></i> Agregar al carrito
+              </button>
+              <button class="btn-buy-now">
+                <i class="fas fa-bolt"></i> Comprar ahora
+              </button>
+              <div class="secure-transaction"><i class="fas fa-lock"></i> Transacción segura</div>
+              <div class="seller-info">
+                <div class="seller-line"><span>Vendido por:</span><strong id="sellerName">Zonama</strong></div>
+                <div id="shipFromLine" class="seller-line"><span>Envío desde:</span><strong id="shipFrom">El Salvador</strong></div>
+              </div>
+              <div id="returnPolicy" class="return-policy"><i class="fas fa-undo"></i> Devoluciones gratuitas en 30 días</div>
+              <div id="digitalPolicy" class="return-policy" style="display:none;"><i class="fas fa-shield-alt"></i> Compra protegida</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="modal" role="dialog" aria-label="Proceso de pago" aria-modal="true">
+      <div class="modal-content">
+        <span class="close" aria-label="Cerrar proceso de pago">&times;</span>
+        <div class="checkout-container">
+          <h2>Finalizar Compra</h2>
+          <div class="checkout-steps">
+            <div class="step active" data-step="1">
+              <h3>1. Dirección de Entrega</h3>
+              <form id="addressForm">
+                <div class="form-group">
+                  <label for="checkoutPhone">Teléfono de contacto *</label>
+                  <input type="tel" id="checkoutPhone" placeholder="Ej: 7777-7777" required>
+                </div>
+                <div class="form-group">
+                  <label>Ubicación en el mapa *</label>
+                  <p class="help-text">Mueve el mapa o el marcador para seleccionar tu dirección de entrega.</p>
+                  <div id="checkoutMap"></div>
+                  <input type="hidden" id="checkoutLat">
+                  <input type="hidden" id="checkoutLng">
+                  <input type="hidden" id="checkoutAddress">
+                </div>
+                <button type="button" class="btn-primary next-step">Continuar</button>
+              </form>
+            </div>
+            <div class="step" data-step="2">
+              <h3>2. Método de Pago</h3>
+              <div class="payment-methods">
+                <label><input type="radio" name="payment" value="card" checked> <i class="fas fa-credit-card"></i> Tarjeta de Crédito/Débito</label>
+                <label><input type="radio" name="payment" value="tigo-money"> <i class="fas fa-mobile-alt"></i> Tigo Money</label>
+                <label><input type="radio" name="payment" value="chivo-wallet"> <i class="fab fa-bitcoin"></i> Chivo Wallet (Bitcoin)</label>
+                <label><input type="radio" name="payment" value="cash"> <i class="fas fa-money-bill-wave"></i> Pago Contra Entrega</label>
+              </div>
+              <div id="cardForm" class="payment-form">
+                <input type="text" placeholder="Número de tarjeta" required>
+                <input type="text" placeholder="MM/AA" required>
+                <input type="text" placeholder="CVV" required>
+              </div>
+              <button type="button" class="btn-primary" id="processPayment">Procesar Pago</button>
+            </div>
+            <div class="step" data-step="3">
+              <h3>3. Confirmación</h3>
+              <div id="orderConfirmation"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <img src="data/logo/Recurso 31-1.png" alt="Zonama">
+            Zonama
+          </div>
+          <p class="footer-desc">El marketplace que conecta a El Salvador. Comprá, vendé y descubrí productos auténticos de tu país.</p>
+          <div class="footer-social">
+            <a href="#" class="social-btn" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-btn" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-btn" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-btn" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Compradores</h4>
+          <ul>
+            <li><a href="#">Cómo comprar</a></li>
+            <li><a href="#">Métodos de pago</a></li>
+            <li><a href="#">Envíos y entregas</a></li>
+            <li><a href="#">Devoluciones</a></li>
+            <li><a href="#">Protección al comprador</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Vendedores</h4>
+          <ul>
+            <li><a href="#" id="footerSellerLink">Vender en Zonama</a></li>
+            <li><a href="seller.html">Planes y precios</a></li>
+            <li><a href="#">Centro de vendedores</a></li>
+            <li><a href="#">Recursos y guías</a></li>
+            <li><a href="#">API para vendedores</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Soporte</h4>
+          <ul>
+            <li><a href="#">Centro de ayuda</a></li>
+            <li><a href="#">Contacto</a></li>
+            <li><a href="#">Términos y condiciones</a></li>
+            <li><a href="#">Política de privacidad</a></li>
+            <li><a href="#">Seguridad</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 Zonama. Todos los derechos reservados.</p>
+        <div class="footer-sv">
+          <div class="sv-flag">
+            <div class="sv-flag-stripe"></div>
+            <div class="sv-flag-stripe"></div>
+            <div class="sv-flag-stripe"></div>
+          </div>
+          Hecho con orgullo en El Salvador
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       SCRIPTS
+  ============================================================ -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="Js/script.js"></script>
+
+  <!-- Motion, reveal, parallax, tilt, progress -->
+  <script>
+    (function () {
+      /* --- Scroll reveal --- */
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale,.reveal-fast')
+        .forEach(el => io.observe(el));
+
+      /* --- Sticky nav + scroll progress + hero parallax --- */
+      const header   = document.getElementById('mainHeader');
+      const progress = document.getElementById('scrollProgress');
+      const hero     = document.querySelector('.hero');
+      const maxScroll = () => document.documentElement.scrollHeight - window.innerHeight;
+
+      window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        header.classList.toggle('scrolled', y > 60);
+        if (progress) progress.style.transform = `scaleX(${Math.min(y / maxScroll(), 1)})`;
+        if (hero) hero.style.setProperty('--parallax-y', `${y * 0.35}px`);
+      }, { passive: true });
+
+      /* --- Stat counter entrance --- */
+      const counterIO = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.style.animation = 'countUp 0.6s cubic-bezier(0.4,0,0.2,1) both';
+            counterIO.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      document.querySelectorAll('.stats-strip .stat-item strong').forEach(el => counterIO.observe(el));
+
+      /* --- 3-D card tilt on mousemove --- */
+      const TILT = 7; // max degrees
+      function addTilt(selector) {
+        document.querySelectorAll(selector).forEach(card => {
+          card.addEventListener('mousemove', e => {
+            const r = card.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width  - 0.5;
+            const y = (e.clientY - r.top)  / r.height - 0.5;
+            card.style.setProperty('--rx', `${(-y * TILT).toFixed(2)}deg`);
+            card.style.setProperty('--ry', `${( x * TILT).toFixed(2)}deg`);
+          });
+          card.addEventListener('mouseleave', () => {
+            card.style.setProperty('--rx', '0deg');
+            card.style.setProperty('--ry', '0deg');
+          });
+        });
+      }
+      addTilt('.product-card');
+      addTilt('.benefit-card');
+      addTilt('.testimonial-card');
+
+      /* Re-apply tilt after products grid is re-rendered by script.js */
+      const gridEl = document.getElementById('productsGrid');
+      if (gridEl) {
+        new MutationObserver(() => addTilt('.product-card')).observe(gridEl, { childList: true });
+      }
+    })();
+  </script>
 </body>
 
 </html>

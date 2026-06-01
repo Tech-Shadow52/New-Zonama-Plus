@@ -43,7 +43,7 @@ builder.Services.AddAuthorization();
 
 // CORS — allows the frontend to call the API during development
 builder.Services.AddCors(opt => opt.AddDefaultPolicy(p =>
-    p.WithOrigins("http://localhost:5500", "http://127.0.0.1:5500")
+    p.SetIsOriginAllowed(_ => true)   // dev: acepta cualquier origen local
      .AllowAnyHeader()
      .AllowAnyMethod()));
 

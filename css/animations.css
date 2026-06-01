@@ -1,0 +1,345 @@
+/* ================================================================
+   ZONAMA — animations.css
+   Cinematic scroll reveals, hero entrances, micro-interactions
+   ================================================================ */
+
+/* ---- Keyframes ---- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(50px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateX(-60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.80); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-14px) rotate(1deg); }
+  66%       { transform: translateY(-7px) rotate(-1deg); }
+}
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-20px); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212,146,10,0); }
+  50%       { box-shadow: 0 0 40px 8px rgba(212,146,10,0.3); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes spin-reverse {
+  to { transform: rotate(-360deg); }
+}
+@keyframes ripple {
+  0%   { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes heroPattern {
+  0%   { transform: translateX(0) translateY(0); }
+  100% { transform: translateX(-40px) translateY(-40px); }
+}
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+@keyframes borderFlow {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+@keyframes notifIn {
+  from { opacity: 0; transform: translateX(120%); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes notifOut {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(120%); }
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.92) translateY(20px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.35); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.25); }
+  70%       { transform: scale(1); }
+}
+@keyframes tagSlide {
+  from { opacity: 0; transform: translateX(-20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes waveText {
+  0%, 60%, 100% { transform: initial; }
+  30%            { transform: translateY(-12px); }
+}
+
+/* ---- Scroll Reveal System ---- */
+.reveal,
+.reveal-left,
+.reveal-right,
+.reveal-scale,
+.reveal-fast {
+  opacity: 0;
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.75s;
+  will-change: opacity, transform;
+}
+.reveal       { transform: translateY(50px); }
+.reveal-left  { transform: translateX(-50px); }
+.reveal-right { transform: translateX(50px); }
+.reveal-scale { transform: scale(0.85); }
+.reveal-fast  { transform: translateY(30px); transition-duration: 0.45s; }
+
+.reveal.visible,
+.reveal-left.visible,
+.reveal-right.visible,
+.reveal-scale.visible,
+.reveal-fast.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Stagger delays */
+.stagger-1  { transition-delay: 0.05s; }
+.stagger-2  { transition-delay: 0.10s; }
+.stagger-3  { transition-delay: 0.15s; }
+.stagger-4  { transition-delay: 0.20s; }
+.stagger-5  { transition-delay: 0.25s; }
+.stagger-6  { transition-delay: 0.30s; }
+.stagger-7  { transition-delay: 0.35s; }
+.stagger-8  { transition-delay: 0.40s; }
+.stagger-10 { transition-delay: 0.50s; }
+.stagger-12 { transition-delay: 0.60s; }
+
+/* ---- Hero Entrance (no scroll trigger — fires on load) ---- */
+.hero-animate-1 { animation: fadeUp  0.9s cubic-bezier(0.4,0,0.2,1) 0.15s both; }
+.hero-animate-2 { animation: fadeUp  0.9s cubic-bezier(0.4,0,0.2,1) 0.30s both; }
+.hero-animate-3 { animation: fadeUp  0.9s cubic-bezier(0.4,0,0.2,1) 0.45s both; }
+.hero-animate-4 { animation: fadeUp  0.9s cubic-bezier(0.4,0,0.2,1) 0.60s both; }
+.hero-animate-5 { animation: fadeLeft 0.9s cubic-bezier(0.4,0,0.2,1) 0.20s both; }
+.hero-badge-in  { animation: scaleIn  0.6s cubic-bezier(0.34,1.56,0.64,1) 0.05s both; }
+
+/* ---- Floating elements ---- */
+.float-1 { animation: float     5s ease-in-out infinite; }
+.float-2 { animation: floatSlow 7s ease-in-out infinite 1s; }
+.float-3 { animation: float     6s ease-in-out infinite 2s; }
+.float-4 { animation: floatSlow 8s ease-in-out infinite 0.5s; }
+
+/* ---- Loading skeleton ---- */
+.skeleton {
+  background: linear-gradient(90deg, #e2e0db 25%, #f0ede6 50%, #e2e0db 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: 6px;
+}
+
+/* ---- Notification animations ---- */
+.notification-container .notification { animation: notifIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both; }
+.notification-container .notification.hiding { animation: notifOut 0.3s ease forwards; }
+
+/* ---- Modal animation ---- */
+.modal[style*="display: block"] .modal-content { animation: modalIn 0.35s cubic-bezier(0.4,0,0.2,1) both; }
+.modal[style*="display: block"]                 { animation: overlayIn 0.25s ease both; }
+
+/* ---- Cart count bounce ---- */
+@keyframes cartBounce {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.5); }
+}
+.cart-count.bump { animation: cartBounce 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+
+/* ---- Wishlist heartbeat ---- */
+.wishlist-btn.active i { animation: heartbeat 0.8s ease; }
+
+/* ---- Button press ---- */
+.btn-press:active { transform: scale(0.96); }
+
+/* ---- Reduced motion overrides ---- */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-left, .reveal-right, .reveal-scale, .reveal-fast {
+    opacity: 1; transform: none; transition: none;
+  }
+  .hero-animate-1, .hero-animate-2, .hero-animate-3,
+  .hero-animate-4, .hero-animate-5, .hero-badge-in {
+    animation: none;
+  }
+  .float-1, .float-2, .float-3, .float-4 { animation: none; }
+}
+
+/* ================================================================
+   SCROLL PROGRESS BAR
+   ================================================================ */
+.scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 3px;
+  z-index: 9999;
+  background: linear-gradient(90deg, var(--gold-500), var(--gold-300), var(--sv-300));
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.08s linear;
+  pointer-events: none;
+}
+
+/* ================================================================
+   BUTTON FILL HOVER (replaces plain color change)
+   ================================================================ */
+.btn-hero-primary,
+.btn-cta-gold {
+  overflow: hidden;
+}
+.btn-hero-primary::before,
+.btn-cta-gold::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.14);
+  transform: translateX(-105%) skewX(-12deg);
+  transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+}
+.btn-hero-primary:hover::before,
+.btn-cta-gold:hover::before {
+  transform: translateX(105%) skewX(-12deg);
+}
+
+/* ================================================================
+   3-D CARD TILT (via JS-set CSS vars)
+   ================================================================ */
+.product-card,
+.benefit-card,
+.testimonial-card {
+  --rx: 0deg;
+  --ry: 0deg;
+  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease), border-color 0.2s;
+}
+.product-card:hover  { transform: translateY(-8px) rotateX(var(--rx)) rotateY(var(--ry)); }
+.benefit-card:hover  { transform: translateY(-6px) rotateX(var(--rx)) rotateY(var(--ry)); }
+.testimonial-card:hover { transform: translateY(-4px) rotateX(var(--rx)) rotateY(var(--ry)); }
+
+/* ================================================================
+   HERO PARALLAX (via JS-set --parallax-y)
+   ================================================================ */
+.hero::before {
+  transition: none;
+  transform: translateY(var(--parallax-y, 0px));
+}
+
+/* ================================================================
+   HERO CONTENT COUNTER/WORD SPLIT ENTRANCE
+   ================================================================ */
+@keyframes wordIn {
+  from { opacity: 0; transform: translateY(0.5em) skewY(3deg); }
+  to   { opacity: 1; transform: none; }
+}
+.word-animate {
+  display: inline-block;
+  animation: wordIn 0.7s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+/* ================================================================
+   FLAG STRIPE ACCENT (left edge of hero)
+   ================================================================ */
+.hero-flag-accent {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 5px;
+  background: linear-gradient(
+    to bottom,
+    var(--sv-400) 0%,    var(--sv-400) 33.3%,
+    rgba(255,255,255,0.35) 33.3%, rgba(255,255,255,0.35) 66.6%,
+    var(--sv-400) 66.6%, var(--sv-400) 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ================================================================
+   HERO GEO BACKGROUND (El Salvador coat-of-arms triangle / volcano)
+   ================================================================ */
+.hero-geo {
+  position: absolute;
+  right: 0; bottom: 0;
+  width: 55%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 1;
+}
+
+/* ================================================================
+   MOBILE-SPECIFIC HERO
+   ================================================================ */
+@media (max-width: 768px) {
+  .hero {
+    text-align: center;
+    padding-bottom: 48px;
+  }
+  .hero .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero-content p {
+    max-width: 340px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-buttons {
+    justify-content: center;
+  }
+  .hero-stats {
+    justify-content: center;
+    padding-top: 16px;
+  }
+  /* Mobile hero stat pill — unique treatment for mobile only */
+  .hero-stats .stat {
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--r-lg);
+    padding: 12px 16px;
+    min-width: 80px;
+    align-items: center;
+  }
+  .hero-badge {
+    text-align: center;
+  }
+}
+
