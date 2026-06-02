@@ -1,80 +1,600 @@
-# Zonama — Marketplace de El Salvador
+# 🛒 Zonama
 
-El marketplace que conecta a vendedores locales con compradores en todo El Salvador. Compra y vende productos auténticos: artesanías, tecnología, ropa, comida y más.
-
----
-
-## Propósito
-
-El Salvador cuenta con miles de emprendedores, artesanos y pequeños negocios que no tienen acceso a una plataforma digital accesible, local y en español para vender sus productos. Las opciones existentes son internacionales, costosas o no están adaptadas a la realidad del mercado salvadoreño.
-
-**Zonama nace para resolver ese problema.**
-
-Es un marketplace 100% salvadoreño diseñado para:
-
-- **Empoderar a vendedores locales** — cualquier persona puede crear su tienda en minutos, sin conocimientos técnicos y sin costos iniciales, y llegar a compradores en los 14 departamentos del país.
-- **Facilitar la compra local** — los compradores encuentran productos auténticos salvadoreños en un solo lugar, con métodos de pago adaptados al contexto local como pago contra entrega, transferencia y billeteras digitales.
-- **Digitalizar el comercio informal** — artesanos, emprendedores de comida, modistas y pequeños negocios que hoy venden solo por WhatsApp o redes sociales tienen una plataforma profesional para crecer.
-- **Fortalecer la economía local** — al conectar oferta y demanda dentro del mismo país, el dinero circula en la economía salvadoreña y apoya a productores nacionales.
-
-Zonama no es solo una tienda en línea — es una herramienta de desarrollo económico para El Salvador.
+> **El marketplace que conecta a El Salvador.**
+> Plataforma de comercio electrónico diseñada para empoderar a vendedores locales y conectarlos con compradores en todo el país.
 
 ---
 
-## Tecnologías
+## 📋 Descripción General
 
-| Capa | Tecnología |
+Zonama es una plataforma marketplace de comercio electrónico orientada al mercado salvadoreño. Su propósito es resolver una necesidad real: miles de emprendedores, artesanos y pequeños negocios en El Salvador no cuentan con una plataforma digital accesible, local y en español para vender sus productos.
+
+Las opciones existentes son internacionales, costosas o no están adaptadas a la realidad del mercado salvadoreño. **Zonama nace para cambiar eso.**
+
+La plataforma permite que cualquier persona pueda:
+- Registrarse como comprador y explorar un catálogo de productos locales.
+- Crear su propia tienda en línea en minutos y comenzar a vender.
+- Gestionar sus productos, inventario y órdenes desde un panel centralizado.
+
+Zonama no es solo una tienda en línea — es una herramienta de desarrollo económico para El Salvador, construida con una arquitectura escalable preparada para crecer junto al comercio digital del país.
+
+---
+
+## ✨ Características
+
+### Para compradores
+- 🔐 Registro e inicio de sesión seguro con JWT
+- 🔍 Exploración y búsqueda de productos con filtros avanzados
+- 🛒 Carrito de compras sincronizado con la base de datos
+- 📦 Gestión de órdenes y seguimiento de estado
+- ❤️ Lista de favoritos (wishlist)
+- 👤 Perfil editable con foto de usuario
+
+### Para vendedores
+- 🏪 Creación de tienda en línea propia
+- 📦 Alta, edición y eliminación de productos
+- 🖼️ Subida de imágenes de productos (archivo o URL)
+- 📊 Dashboard con estadísticas: ingresos, productos activos, órdenes pendientes
+- 🔄 Gestión de estados de órdenes (Pending → Confirmed → Shipped → Delivered)
+- 🏆 Planes de vendedor: Basic, Pro, Premium
+
+### Del sistema
+- 🔒 Autenticación y autorización por roles (Buyer, Seller, Admin)
+- 🌐 API REST documentada con Swagger / OpenAPI
+- 🗃️ Base de datos relacional con migraciones automáticas
+- 📁 Almacenamiento de imágenes en servidor
+- 🔄 Renovación automática de token JWT al cambiar de rol
+- 🏷️ Categorías de productos: Electronics, Clothing, Books, Sports, Home, Beauty, Toys, Automotive, Other
+
+---
+
+## 🏗️ Arquitectura del Sistema
+
+Zonama adopta un modelo por capas desacoplado que garantiza separación de responsabilidades, facilitando el escalamiento, mantenimiento y testing.
+
+```mermaid
+graph LR
+    A[🖥️ Cliente Web\nHTML / CSS / JS] -->|HTTP + JSON| B[⚙️ API REST\nASP.NET Core]
+    B -->|Lógica de negocio| C[🔧 Servicios\nBusiness Logic]
+    C -->|EF Core| D[(🗄️ SQL Server\nBase de Datos)]
+```
+
+### Capas del backend
+
+```mermaid
+graph TD
+    A[Controllers\nAPI Endpoints] --> B[DTOs\nData Transfer Objects]
+    A --> C[Services\nBusiness Logic]
+    C --> D[Models\nDomain Entities]
+    C --> E[Data Context\nEF Core & Migrations]
+    E --> F[(SQL Server)]
+```
+
+| Capa | Responsabilidad |
 |---|---|
-| Frontend | HTML5, CSS3, JavaScript (Vanilla) |
-| Backend | ASP.NET Core (.NET 10) |
-| Base de datos | SQL Server (LocalDB) |
-| Autenticación | JWT Bearer Tokens |
-| ORM | Entity Framework Core 9 |
-| Documentación API | Swagger / OpenAPI |
+| **Controllers** | Reciben las peticiones HTTP y las dirigen al servicio correspondiente |
+| **DTOs** | Definen la forma exacta de los datos que entran y salen del API |
+| **Services** | Contienen toda la lógica de negocio, aislada de los controladores |
+| **Models** | Representan las entidades del dominio y su mapeo a la base de datos |
+| **Data Context** | Puente entre el código C# y SQL Server, gestiona migraciones |
 
 ---
 
-## Estructura del proyecto
+## 🛠️ Tecnologías Utilizadas
+
+| Área | Tecnología | Versión |
+|---|---|---|
+| **Frontend** | HTML5, CSS3, JavaScript (Vanilla) | — |
+| **Backend** | ASP.NET Core (C#) | .NET 10 |
+| **Base de Datos** | SQL Server / LocalDB | 2022 |
+| **ORM** | Entity Framework Core | 9.0 |
+| **Autenticación** | JWT Bearer Tokens | — |
+| **Encriptación** | BCrypt.Net | 4.0 |
+| **Documentación** | Swagger / OpenAPI | 6.9 |
+| **Control de versiones** | Git / GitHub | — |
+| **Mapas** | Leaflet.js | 1.9.4 |
+
+---
+
+## 📁 Estructura del Proyecto
 
 ```
 New-Zonama-Plus/
-├── index.html              # Página principal
-├── products.html           # Catálogo completo
-├── seller.html             # Página de vendedores
-├── css/
-│   ├── styles.css
-│   └── animations.css
-├── Js/
-│   └── script.js           # Lógica del frontend + conexión al API
-├── data/                   # Imágenes y assets
-└── ZonamaAPI/              # Backend ASP.NET Core
-    ├── Controllers/
+│
+├── 📄 index.html                  # Página principal
+├── 📄 products.html               # Catálogo completo de productos
+├── 📄 seller.html                 # Página de vendedores y planes
+│
+├── 📁 css/
+│   ├── styles.css                 # Estilos globales
+│   └── animations.css             # Animaciones y transiciones
+│
+├── 📁 Js/
+│   └── script.js                  # Lógica del frontend + conexión al API
+│
+├── 📁 data/
+│   ├── logo/                      # Logotipos
+│   └── productos/                 # Imágenes de productos
+│
+└── 📁 ZonamaAPI/                  # Backend ASP.NET Core
+    │
+    ├── 📁 Controllers/
     │   ├── UsersController.cs
     │   ├── SellersController.cs
     │   ├── ProductsController.cs
     │   ├── CartController.cs
     │   ├── OrdersController.cs
     │   └── UploadsController.cs
-    ├── Services/
-    ├── Models/
-    ├── DTOs/
-    ├── Data/
-    ├── Migrations/
-    ├── Program.cs
-    └── appsettings.json
+    │
+    ├── 📁 Services/
+    │   ├── UserService.cs
+    │   ├── SellerService.cs
+    │   ├── ProductService.cs
+    │   ├── CartService.cs
+    │   ├── OrderService.cs
+    │   └── 📁 Interfaces/
+    │       ├── IUserService.cs
+    │       ├── ISellerService.cs
+    │       ├── IProductService.cs
+    │       ├── ICartService.cs
+    │       └── IOrderService.cs
+    │
+    ├── 📁 Models/
+    │   ├── User.cs
+    │   ├── Seller.cs
+    │   ├── Product.cs
+    │   ├── Cart.cs
+    │   ├── Order.cs
+    │   └── Enums.cs
+    │
+    ├── 📁 DTOs/
+    │   ├── UserDtos.cs
+    │   ├── SellerDtos.cs
+    │   ├── ProductDtos.cs
+    │   ├── CartDtos.cs
+    │   └── OrderDtos.cs
+    │
+    ├── 📁 Data/
+    │   ├── ZonamaDbContext.cs
+    │   └── DbSeeder.cs
+    │
+    ├── 📁 Common/
+    │   └── ApiResponse.cs
+    │
+    ├── 📁 Migrations/
+    ├── 📄 Program.cs
+    └── 📄 appsettings.json
 ```
 
 ---
 
-## Requisitos
+## 🗃️ Modelo de Datos
 
-- [.NET 10 SDK](https://dotnet.microsoft.com/download)
-- SQL Server Express o LocalDB (Windows)
-- Live Server (extensión de VS Code) o cualquier servidor HTTP estático
+```mermaid
+erDiagram
+    USER {
+        int Id
+        string Name
+        string Email
+        string PasswordHash
+        string Phone
+        string AvatarUrl
+        UserRole Role
+        bool IsActive
+        DateTime CreatedAt
+    }
+
+    SELLER {
+        int Id
+        int UserId
+        string StoreName
+        string Description
+        string LogoUrl
+        string Location
+        string Phone
+        SellerPlan Plan
+        double Rating
+        int TotalSales
+        bool IsVerified
+        DateTime CreatedAt
+    }
+
+    PRODUCT {
+        int Id
+        int SellerId
+        string Title
+        string Description
+        decimal Price
+        decimal OriginalPrice
+        ProductCategory Category
+        string Brand
+        string ImageUrl
+        int Stock
+        double Rating
+        bool IsActive
+        bool IsFeatured
+        DateTime CreatedAt
+    }
+
+    ORDER {
+        int Id
+        int UserId
+        OrderStatus Status
+        PaymentMethod PaymentMethod
+        decimal Total
+        string DeliveryAddress
+        DateTime CreatedAt
+    }
+
+    ORDER_ITEM {
+        int Id
+        int OrderId
+        int ProductId
+        int Quantity
+        decimal UnitPrice
+    }
+
+    CART_ITEM {
+        int Id
+        int UserId
+        int ProductId
+        int Quantity
+    }
+
+    USER ||--o| SELLER : "puede ser"
+    SELLER ||--o{ PRODUCT : "publica"
+    USER ||--o{ ORDER : "realiza"
+    ORDER ||--|{ ORDER_ITEM : "contiene"
+    USER ||--o{ CART_ITEM : "tiene en carrito"
+    PRODUCT ||--o{ CART_ITEM : "referenciado en"
+    PRODUCT ||--o{ ORDER_ITEM : "incluido en"
+```
+
+### Entidades principales
+
+| Entidad | Descripción |
+|---|---|
+| **User** | Persona registrada. Puede ser Buyer, Seller o Admin |
+| **Seller** | Perfil de tienda vinculado a un User con rol Seller |
+| **Product** | Artículo publicado por un Seller, pertenece a una categoría |
+| **Cart** | Items temporales que el comprador ha seleccionado |
+| **Order** | Compra confirmada con estado rastreable |
+| **OrderItem** | Línea de detalle de una orden (producto + cantidad + precio) |
+
+### Roles del sistema
+
+| Rol | Descripción |
+|---|---|
+| `Buyer` | Usuario registrado que puede comprar |
+| `Seller` | Usuario con tienda activa que puede publicar productos |
+| `Admin` | Acceso total al sistema |
 
 ---
 
-## Instalación y ejecución
+## 🌐 API REST
+
+Base URL: `http://localhost:5000`
+
+Documentación interactiva: `http://localhost:5000/swagger`
+
+### Autenticación
+
+Los endpoints protegidos requieren el header:
+```
+Authorization: Bearer <token>
+```
+
+---
+
+### 👤 Usuarios — `/api/users`
+
+#### `POST /api/users/register`
+Registrar un nuevo usuario.
+
+**Request:**
+```json
+{
+  "name": "Juan Pérez",
+  "email": "juan@correo.com",
+  "password": "123456",
+  "phone": "555-1234"
+}
+```
+
+**Response `200 OK`:**
+```json
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": 1,
+      "name": "Juan Pérez",
+      "email": "juan@correo.com",
+      "role": "Buyer",
+      "createdAt": "2025-06-01T10:00:00"
+    }
+  }
+}
+```
+
+---
+
+#### `POST /api/users/login`
+Iniciar sesión.
+
+**Request:**
+```json
+{
+  "email": "juan@correo.com",
+  "password": "123456"
+}
+```
+
+**Response `200 OK`:**
+```json
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "user": {
+      "id": 1,
+      "name": "Juan Pérez",
+      "role": "Seller"
+    }
+  }
+}
+```
+
+---
+
+#### `GET /api/users/me` 🔐
+Ver mi perfil.
+
+**Response `200 OK`:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "name": "Juan Pérez",
+    "email": "juan@correo.com",
+    "phone": "555-1234",
+    "avatarUrl": null,
+    "role": "Seller",
+    "createdAt": "2025-06-01T10:00:00"
+  }
+}
+```
+
+---
+
+### 🏪 Vendedores — `/api/sellers`
+
+#### `POST /api/sellers/register` 🔐
+Registrar una tienda. Cambia el rol del usuario a Seller.
+
+**Request:**
+```json
+{
+  "storeName": "TechZone SV",
+  "description": "Electrónicos y gadgets al mejor precio",
+  "location": "San Salvador",
+  "phone": "555-0001",
+  "plan": "Pro"
+}
+```
+
+**Response `200 OK`:**
+```json
+{
+  "success": true,
+  "message": "Tienda registrada exitosamente.",
+  "data": {
+    "id": 1,
+    "storeName": "TechZone SV",
+    "plan": "Pro",
+    "isVerified": false,
+    "createdAt": "2025-06-01T10:05:00"
+  }
+}
+```
+
+---
+
+#### `GET /api/sellers/{id}`
+Ver una tienda por ID (público).
+
+**Response `200 OK`:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "storeName": "TechZone SV",
+    "description": "Electrónicos y gadgets al mejor precio",
+    "location": "San Salvador",
+    "rating": 4.8,
+    "totalSales": 120,
+    "isVerified": true
+  }
+}
+```
+
+---
+
+#### `GET /api/sellers/dashboard` 🔐 Seller
+Ver estadísticas de mi tienda.
+
+**Response `200 OK`:**
+```json
+{
+  "success": true,
+  "data": {
+    "totalProducts": 15,
+    "activeProducts": 14,
+    "totalRevenue": 2450.00,
+    "pendingOrders": 3,
+    "recentProducts": [...]
+  }
+}
+```
+
+---
+
+### 📦 Productos — `/api/products`
+
+#### `GET /api/products`
+Listar todos los productos (público). Soporta filtros:
+
+| Parámetro | Tipo | Descripción |
+|---|---|---|
+| `search` | string | Buscar por nombre o marca |
+| `category` | string | Electronics, Clothing, Books... |
+| `minPrice` | decimal | Precio mínimo |
+| `maxPrice` | decimal | Precio máximo |
+| `sellerId` | int | Filtrar por tienda |
+| `isFeatured` | bool | Solo destacados |
+| `sortBy` | string | newest, price_asc, price_desc, rating |
+| `page` | int | Página (default: 1) |
+| `pageSize` | int | Items por página (default: 20) |
+
+**Response `200 OK`:**
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": 1,
+        "title": "Laptop Gamer Asus ROG",
+        "price": 18999.99,
+        "originalPrice": 21000.00,
+        "category": "Electronics",
+        "brand": "Asus",
+        "imageUrl": "http://localhost:5000/uploads/abc123.jpg",
+        "stock": 10,
+        "rating": 4.7,
+        "sellerName": "TechZone SV"
+      }
+    ],
+    "totalCount": 42,
+    "page": 1,
+    "pageSize": 20
+  }
+}
+```
+
+---
+
+#### `POST /api/products` 🔐 Seller
+Crear un producto.
+
+**Request:**
+```json
+{
+  "title": "Laptop Gamer Asus ROG",
+  "description": "RTX 4060, 16GB RAM, 512GB SSD",
+  "price": 18999.99,
+  "originalPrice": 21000.00,
+  "category": "Electronics",
+  "brand": "Asus",
+  "imageUrl": "https://ejemplo.com/imagen.jpg",
+  "stock": 10
+}
+```
+
+**Response `201 Created`:**
+```json
+{
+  "success": true,
+  "message": "Producto creado.",
+  "data": {
+    "id": 5,
+    "title": "Laptop Gamer Asus ROG",
+    "price": 18999.99,
+    "stock": 10,
+    "createdAt": "2025-06-01T11:00:00"
+  }
+}
+```
+
+---
+
+### 🛒 Carrito — `/api/cart` 🔐
+
+| Método | Endpoint | Descripción |
+|---|---|---|
+| `GET` | `/api/cart` | Ver mi carrito |
+| `POST` | `/api/cart` | Agregar producto |
+| `PUT` | `/api/cart/{productId}` | Cambiar cantidad |
+| `DELETE` | `/api/cart/{productId}` | Quitar producto |
+| `DELETE` | `/api/cart` | Vaciar carrito |
+
+---
+
+### 📋 Órdenes — `/api/orders` 🔐
+
+#### `POST /api/orders`
+Crear una orden (checkout).
+
+**Request:**
+```json
+{
+  "paymentMethod": "Cash",
+  "deliveryAddress": "Calle Principal, San Salvador",
+  "deliveryLat": 13.6929,
+  "deliveryLng": -89.2182,
+  "notes": "Llamar antes de entregar"
+}
+```
+
+**Response `200 OK`:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 12,
+    "status": "Pending",
+    "total": 18999.99,
+    "paymentMethod": "Cash",
+    "items": [
+      {
+        "productTitle": "Laptop Gamer Asus ROG",
+        "quantity": 1,
+        "unitPrice": 18999.99,
+        "subtotal": 18999.99
+      }
+    ],
+    "createdAt": "2025-06-01T12:00:00"
+  }
+}
+```
+
+---
+
+### Mapa de permisos
+
+| Endpoint | Sin cuenta | Buyer | Seller | Admin |
+|---|:---:|:---:|:---:|:---:|
+| Ver productos | ✅ | ✅ | ✅ | ✅ |
+| Ver tienda por ID | ✅ | ✅ | ✅ | ✅ |
+| Registro / Login | ✅ | ✅ | ✅ | ✅ |
+| Mi perfil / carrito / órdenes | ❌ | ✅ | ✅ | ✅ |
+| Crear tienda | ❌ | ✅ | ❌ | ✅ |
+| Crear / editar productos | ❌ | ❌ | ✅ | ✅ |
+| Dashboard vendedor | ❌ | ❌ | ✅ | ✅ |
+| Cambiar estado de orden | ❌ | ❌ | ✅ | ✅ |
+
+---
+
+## ⚙️ Instalación
+
+### Requisitos previos
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- SQL Server Express o LocalDB (Windows)
+- Visual Studio Code con extensión Live Server
 
 ### 1. Clonar el repositorio
 
@@ -83,171 +603,148 @@ git clone https://github.com/Tech-Shadow52/New-Zonama-Plus.git
 cd New-Zonama-Plus
 ```
 
-### 2. Levantar el API
+### 2. Configurar la base de datos
+
+Editar `ZonamaAPI/appsettings.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=ZonamaDB;Trusted_Connection=True;"
+  }
+}
+```
+
+### 3. Levantar el API
 
 ```bash
 cd ZonamaAPI
 dotnet run
 ```
 
-La primera vez crea la base de datos y ejecuta las migraciones automáticamente.
+> Las migraciones y el seed inicial se ejecutan automáticamente al arrancar.
 
-El API queda corriendo en:
+El API queda disponible en:
 ```
 http://localhost:5000
+http://localhost:5000/swagger
 ```
 
-### 3. Levantar el frontend
+### 4. Levantar el frontend
 
-Abre `index.html` con Live Server en VS Code → queda en:
+Abrir `index.html` con **Live Server** en VS Code.
+
 ```
 http://127.0.0.1:5500
 ```
 
 ---
 
-## Documentación del API
+## 🔑 Variables de Entorno
 
-Con el servidor corriendo, accede a Swagger en:
-```
-http://localhost:5000/swagger
-```
+Crear `ZonamaAPI/appsettings.json` basado en este ejemplo:
 
-### Endpoints disponibles
-
-#### Usuarios — `/api/users`
-| Método | Endpoint | Auth | Descripción |
-|---|---|---|---|
-| POST | `/api/users/register` | No | Registrar nuevo usuario |
-| POST | `/api/users/login` | No | Iniciar sesión, devuelve token JWT |
-| POST | `/api/users/refresh-token` | Sí | Renovar token (actualiza el rol) |
-| GET | `/api/users/me` | Sí | Ver mi perfil |
-| PUT | `/api/users/me` | Sí | Actualizar mi perfil |
-
-#### Tiendas — `/api/sellers`
-| Método | Endpoint | Auth | Descripción |
-|---|---|---|---|
-| GET | `/api/sellers/{id}` | No | Ver una tienda por ID |
-| POST | `/api/sellers/register` | Sí | Registrar mi tienda |
-| PUT | `/api/sellers/{id}` | Seller | Actualizar mi tienda |
-| GET | `/api/sellers/dashboard` | Seller | Ver estadísticas y productos de mi tienda |
-
-#### Productos — `/api/products`
-| Método | Endpoint | Auth | Descripción |
-|---|---|---|---|
-| GET | `/api/products` | No | Listar todos los productos |
-| GET | `/api/products/featured` | No | Productos destacados |
-| GET | `/api/products/{id}` | No | Detalle de un producto |
-| POST | `/api/products` | Seller | Crear producto |
-| PUT | `/api/products/{id}` | Seller | Editar producto |
-| DELETE | `/api/products/{id}` | Seller | Eliminar producto |
-
-**Filtros disponibles para `GET /api/products`:**
-```
-?search=laptop
-?category=Electronics
-?minPrice=100&maxPrice=500
-?sellerId=3
-?isFeatured=true
-?sortBy=newest | price_asc | price_desc | rating
-?page=1&pageSize=20
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=ZonamaDB;Trusted_Connection=True;MultipleActiveResultSets=true"
+  },
+  "Jwt": {
+    "Key": "CLAVE_SECRETA_MINIMO_32_CARACTERES_AQUI",
+    "Issuer": "ZonamaAPI",
+    "Audience": "ZonamaApp"
+  },
+  "AllowedHosts": "*",
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  }
+}
 ```
 
-#### Carrito — `/api/cart`
-| Método | Endpoint | Auth | Descripción |
-|---|---|---|---|
-| GET | `/api/cart` | Sí | Ver mi carrito |
-| POST | `/api/cart` | Sí | Agregar producto al carrito |
-| PUT | `/api/cart/{productId}` | Sí | Cambiar cantidad |
-| DELETE | `/api/cart/{productId}` | Sí | Quitar producto |
-| DELETE | `/api/cart` | Sí | Vaciar carrito |
-
-#### Órdenes — `/api/orders`
-| Método | Endpoint | Auth | Descripción |
-|---|---|---|---|
-| GET | `/api/orders` | Sí | Ver mis órdenes |
-| GET | `/api/orders/{id}` | Sí | Detalle de una orden |
-| POST | `/api/orders` | Sí | Crear orden (checkout) |
-| PUT | `/api/orders/{id}/status` | Seller | Actualizar estado de orden |
-
-**Estados de una orden:** `Pending → Confirmed → Shipped → Delivered → Cancelled`
-
-#### Imágenes — `/api/uploads`
-| Método | Endpoint | Auth | Descripción |
-|---|---|---|---|
-| POST | `/api/uploads` | Sí | Subir imagen de producto (max 5MB) |
+> ⚠️ **Nunca subas `appsettings.json` con claves reales a un repositorio público.**
 
 ---
 
-## Autenticación
+## 🔒 Seguridad
 
-El API usa **JWT Bearer Tokens**. Para endpoints protegidos incluir en el header:
-
-```
-Authorization: Bearer <token>
-```
-
-### En Swagger
-1. Ejecutar `POST /api/users/login`
-2. Copiar el `token` de la respuesta
-3. Clic en **Authorize 🔒**
-4. Escribir `Bearer <token>` y confirmar
-
----
-
-## Roles y permisos
-
-| Acción | Sin cuenta | Buyer | Seller | Admin |
-|---|:---:|:---:|:---:|:---:|
-| Ver productos y tiendas | ✅ | ✅ | ✅ | ✅ |
-| Registrarse / Login | ✅ | ✅ | ✅ | ✅ |
-| Carrito y órdenes | ❌ | ✅ | ✅ | ✅ |
-| Crear tienda | ❌ | ✅ | ❌ | ✅ |
-| Agregar / editar productos | ❌ | ❌ | ✅ | ✅ |
-| Dashboard vendedor | ❌ | ❌ | ✅ | ✅ |
-| Cambiar estado de orden | ❌ | ❌ | ✅ | ✅ |
-
----
-
-## Flujo principal
-
-```
-1. Usuario se registra          → rol: Buyer
-2. Usuario crea su tienda       → rol cambia a Seller
-3. Token se renueva automáticamente con el nuevo rol
-4. Seller agrega productos      → guardados en base de datos
-5. Compradores los ven en la tienda
-6. Comprador agrega al carrito  → sincronizado con el API
-7. Comprador hace checkout      → se crea la orden
-8. Seller gestiona el estado    → Confirmed → Shipped → Delivered
-```
-
----
-
-## Categorías de productos disponibles
-
-`Electronics` · `Books` · `Clothing` · `Sports` · `Home` · `Beauty` · `Toys` · `Automotive` · `Other`
-
----
-
-## Planes de vendedor
-
-| Plan | Precio |
+| Práctica | Implementación |
 |---|---|
-| Basic | Gratis |
-| Pro | $15/mes |
-| Premium | $40/mes |
+| **Contraseñas** | Encriptadas con BCrypt — nunca se guardan en texto plano |
+| **Autenticación** | JWT Bearer Tokens firmados con HMAC SHA-256 |
+| **Expiración de tokens** | 7 días — renovables con `/api/users/refresh-token` |
+| **Autorización por roles** | `[Authorize(Roles = "Seller,Admin")]` en cada endpoint |
+| **Validación de datos** | DTOs con Data Annotations — rechazo de datos inválidos |
+| **CORS** | Configurado solo para los orígenes permitidos |
+| **Subida de archivos** | Extensiones permitidas: jpg, png, webp, avif, gif — máx. 5MB |
+| **Soft delete** | Los productos no se eliminan físicamente (`IsActive = false`) |
 
 ---
 
-## Páginas del frontend
+## 🗺️ Roadmap
 
-| Página | Descripción |
+### Versión 1.1
+- [ ] Sistema de reseñas y calificaciones de productos
+- [ ] Notificaciones por email al crear una orden
+- [ ] Panel de administrador completo
+
+### Versión 1.2
+- [ ] Integración con pasarela de pagos (Stripe / PayPal)
+- [ ] Sistema de cupones y descuentos
+- [ ] Búsqueda avanzada con Elasticsearch
+
+### Versión 2.0
+- [ ] Aplicación móvil (React Native)
+- [ ] Sistema de logística y seguimiento de envíos en tiempo real
+- [ ] Analítica de ventas para vendedores (charts, reportes exportables)
+- [ ] Integración con Chivo Wallet (Bitcoin)
+- [ ] Multi-idioma (español / inglés)
+
+---
+
+## 🤝 Contribución
+
+1. Haz fork del repositorio
+2. Crea una rama para tu feature:
+```bash
+git checkout -b feature/nueva-funcionalidad
+```
+3. Realiza tus cambios y commitea:
+```bash
+git commit -m "feat: agregar nueva funcionalidad"
+```
+4. Sube tu rama:
+```bash
+git push origin feature/nueva-funcionalidad
+```
+5. Abre un Pull Request describiendo los cambios
+
+### Convención de commits
+
+| Prefijo | Uso |
 |---|---|
-| `index.html` | Inicio con productos destacados, categorías y hero |
-| `products.html` | Catálogo completo con filtros |
-| `seller.html` | Información y registro de vendedores |
+| `feat:` | Nueva funcionalidad |
+| `fix:` | Corrección de bug |
+| `docs:` | Cambios en documentación |
+| `refactor:` | Refactorización de código |
+| `style:` | Cambios de formato o estilo |
 
 ---
 
-Hecho con orgullo en El Salvador 🇸🇻
+## 📄 Licencia
+
+Este proyecto está bajo la licencia **MIT**. Consulta el archivo `LICENSE` para más detalles.
+
+---
+
+## 👨‍💻 Autor
+
+**Tech Shadow** — [@Tech-Shadow52](https://github.com/Tech-Shadow52)
+
+---
+
+<div align="center">
+  Hecho con orgullo en El Salvador 🇸🇻
+</div>
