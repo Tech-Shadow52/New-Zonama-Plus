@@ -4,6 +4,23 @@ El marketplace que conecta a vendedores locales con compradores en todo El Salva
 
 ---
 
+## Propósito
+
+El Salvador cuenta con miles de emprendedores, artesanos y pequeños negocios que no tienen acceso a una plataforma digital accesible, local y en español para vender sus productos. Las opciones existentes son internacionales, costosas o no están adaptadas a la realidad del mercado salvadoreño.
+
+**Zonama nace para resolver ese problema.**
+
+Es un marketplace 100% salvadoreño diseñado para:
+
+- **Empoderar a vendedores locales** — cualquier persona puede crear su tienda en minutos, sin conocimientos técnicos y sin costos iniciales, y llegar a compradores en los 14 departamentos del país.
+- **Facilitar la compra local** — los compradores encuentran productos auténticos salvadoreños en un solo lugar, con métodos de pago adaptados al contexto local como pago contra entrega, transferencia y billeteras digitales.
+- **Digitalizar el comercio informal** — artesanos, emprendedores de comida, modistas y pequeños negocios que hoy venden solo por WhatsApp o redes sociales tienen una plataforma profesional para crecer.
+- **Fortalecer la economía local** — al conectar oferta y demanda dentro del mismo país, el dinero circula en la economía salvadoreña y apoya a productores nacionales.
+
+Zonama no es solo una tienda en línea — es una herramienta de desarrollo económico para El Salvador.
+
+---
+
 ## Tecnologías
 
 | Capa | Tecnología |
