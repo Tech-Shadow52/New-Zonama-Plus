@@ -25,6 +25,14 @@ public class UsersController(IUserService userService) : ControllerBase
     }
 
     [Authorize]
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken()
+    {
+        var result = await userService.RefreshTokenAsync(GetUserId());
+        return result.Success ? Ok(result) : BadRequest(result);
+    }
+
+    [Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> GetProfile()
     {

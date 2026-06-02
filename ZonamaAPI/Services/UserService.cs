@@ -41,6 +41,13 @@ public class UserService(ZonamaDbContext db, IConfiguration config) : IUserServi
         return ApiResponse<AuthResponse>.Ok(new AuthResponse(GenerateToken(user), ToDto(user)));
     }
 
+    public async Task<ApiResponse<AuthResponse>> RefreshTokenAsync(int userId)
+    {
+        var user = await db.Users.FindAsync(userId);
+        if (user is null) return ApiResponse<AuthResponse>.Fail("Usuario no encontrado.");
+        return ApiResponse<AuthResponse>.Ok(new AuthResponse(GenerateToken(user), ToDto(user)));
+    }
+
     public async Task<ApiResponse<UserDto>> GetByIdAsync(int id)
     {
         var user = await db.Users.FindAsync(id);

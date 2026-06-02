@@ -43,6 +43,7 @@ class ECommerceApp {
             originalPrice: p.originalPrice || null,
             type: 'physical',
             category: p.category.toLowerCase(),
+            stock: p.stock ?? 0,
             available: p.stock > 0,
             image: p.imageUrl || 'data/productos/placeholder.avif',
             description: p.description || '',
@@ -2228,6 +2229,19 @@ if (product.category === 'misc') {
 
                 this.currentSeller = data.data;
                 localStorage.setItem('zonama_seller', JSON.stringify(data.data));
+
+                // Refrescar el token para que incluya el rol Seller
+                try {
+                    const refreshData = await this.apiRequest('/api/users/refresh-token', { method: 'POST' });
+                    if (refreshData.success) {
+                        this.authToken = refreshData.data.token;
+                        this.currentUser = refreshData.data.user;
+                        localStorage.setItem('zonama_token', this.authToken);
+                        localStorage.setItem('zonama_user', JSON.stringify(this.currentUser));
+                        this.updateLoginButton();
+                    }
+                } catch (e) { /* continuar sin refrescar */ }
+
                 this.showNotification('¡Tienda creada exitosamente! Bienvenido a Zonama', 'success');
                 this.hideModal('sellerRegistrationModal');
                 setTimeout(() => this.openSellerDashboard(), 500);
@@ -2258,15 +2272,21 @@ if (product.category === 'misc') {
 
         if (this.authToken) {
             try {
-                const data = await this.apiRequest('/api/sellers/dashboard');
-                if (data.success) {
-                    const dash = data.data;
+                const [dashData, productsData] = await Promise.all([
+                    this.apiRequest('/api/sellers/dashboard'),
+                    this.apiRequest(`/api/products?sellerId=${this.currentSeller.id || this.currentSeller.Id}&pageSize=500`)
+                ]);
+
+                if (dashData.success) {
+                    const dash = dashData.data;
                     document.getElementById('totalProducts').textContent = dash.totalProducts;
                     document.getElementById('totalSales').textContent = dash.pendingOrders;
                     document.getElementById('totalRevenue').textContent = `$${(dash.totalRevenue || 0).toFixed(2)}`;
 
-                    // Cargar productos del seller desde API
-                    if (dash.recentProducts) {
+                    // Cargar TODOS los productos del seller (no solo los 5 recientes)
+                    if (productsData.success && productsData.data?.items?.length > 0) {
+                        this.sellerProducts = productsData.data.items.map(p => this.normalizeApiProduct(p));
+                    } else if (dash.recentProducts) {
                         this.sellerProducts = dash.recentProducts.map(p => this.normalizeApiProduct(p));
                     }
                     this.displaySellerProducts();
@@ -2307,10 +2327,10 @@ if (product.category === 'misc') {
                     <div class="product-item-stock">Stock: ${product.stock} unidades</div>
                 </div>
                 <div class="product-item-actions">
-                    <button class="btn-edit-product" onclick="app.editProduct(${product.id})">
+                    <button class="btn-edit-product" onclick="app.editProduct('${product.id}')">
                         <i class="fas fa-edit"></i> Editar
                     </button>
-                    <button class="btn-delete-product" onclick="app.deleteProduct(${product.id})">
+                    <button class="btn-delete-product" onclick="app.deleteProduct('${product.id}')">
                         <i class="fas fa-trash"></i> Eliminar
                     </button>
                 </div>
@@ -2353,17 +2373,12 @@ if (product.category === 'misc') {
         if (urlInput) urlInput.value = '';
         
         // Reset to file upload tab
-        this.switchImageTab('file');
+        this.switchUploadTab('file');
     }
 
     async handleAddProduct() {
-        // Get image data from either file upload or URL
+        // Get image data from either file upload or URL (optional)
         const imageData = this.getProductImageData();
-        
-        if (!imageData) {
-            // Error message already shown in getProductImageData()
-            return;
-        }
 
         // Check if we're editing or adding
         if (this.editingProductId) {
@@ -2423,7 +2438,7 @@ if (product.category === 'misc') {
                             category: categoryMap[rawCategory] || 'Other',
                             stock: parseInt(document.getElementById('productStock').value),
                             description: document.getElementById('productDescription').value,
-                            imageUrl: imageData.startsWith('http') ? imageData : null,
+                            imageUrl: (imageData && imageData.startsWith('http')) ? imageData : null,
                         })
                     });
 
@@ -2495,7 +2510,7 @@ if (product.category === 'misc') {
         if (product.image) {
             if (product.image.startsWith('http')) {
                 // Switch to URL tab
-                this.switchImageTab('url');
+                this.switchUploadTab('url');
                 document.getElementById('productImageUrl').value = product.image;
                 
                 // Show preview
@@ -2590,18 +2605,19 @@ if (product.category === 'misc') {
 
     // ===== IMAGE UPLOAD FUNCTIONS =====
     
-    switchImageTab(tab) {
+    switchUploadTab(tab) {
         // Update tab buttons
-        document.querySelectorAll('.upload-tab').forEach(btn => {
+        document.querySelectorAll('.upload-tab-btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        document.querySelector(`.upload-tab[data-tab="${tab}"]`).classList.add('active');
+        const activeBtn = document.querySelector(`.upload-tab-btn[data-tab="${tab}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
 
         // Update tab content
         document.querySelectorAll('.upload-tab-content').forEach(content => {
             content.classList.remove('active');
         });
-        
+
         if (tab === 'file') {
             document.getElementById('fileUploadTab').classList.add('active');
         } else {
@@ -2774,9 +2790,8 @@ if (product.category === 'misc') {
                     return product.image;
                 }
             }
-            
-            this.showNotification('Por favor selecciona una imagen', 'warning');
-            return null;
+            // Image is optional — allow submitting without one
+            return '';
         } else if (urlTab && urlTab.classList.contains('active')) {
             // URL input is active
             const urlInput = document.getElementById('productImageUrl');
